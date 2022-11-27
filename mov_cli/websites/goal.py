@@ -1,6 +1,5 @@
 from ..utils.scraper import WebScraper
 from bs4 import BeautifulSoup as BS
-from datetime import datetime
 
 class goal9(WebScraper):
     def __init__(self, base_url) -> None:

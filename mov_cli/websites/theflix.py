@@ -201,76 +201,6 @@ class Theflix(WebScraper):
         )
         return season, episodes, episode
 
-    """def display(self, result: list, result_no: int = None):
-        print(result_no)
-        for ix, vl in enumerate(result):
-            print(self.green(f"[{ix + 1}] {vl[0]} {vl[-1]}"), end="\n\n")
-        print(self.red("[q] Exit!"), end="\n\n")
-        print(self.yellow("[s] Search Again!"), end="\n\n")
-        print(self.cyan("[d] Download!"), end="\n\n")
-        choice = ""
-        while choice not in range(len(result) + 1):
-            choice = (
-                input(self.blue("Enter your choice: ")) if not result_no else result_no
-            )
-            if choice == "q":
-                sys.exit()
-            elif choice == "s":
-                return self.redo()
-            elif choice == "d":
-                token = self.auth_token()
-                try:
-                    mov = result[
-                        int(
-                            input(
-                                self.yellow(
-                                    "[!] Please enter the number of the movie you want to download: "
-                                )
-                            )
-                        )
-                        - 1
-                    ]
-                    name = mov[0]
-                    if mov[-1] == "WS":
-                        season, episodes, episode = self.ask(
-                            mov[-2], mov[1], name, token
-                        )
-                        page, name = self.wspage([mov[0], mov[1], season, episode])
-                        cdn, name = self.cdnurlep(page, name, token)
-                        self.dl(cdn, name)
-                    else:
-                        page = self.page(mov)
-                        cdn, name = self.cdnurl(page[0], name, token)
-                        self.dl(cdn, name)
-                except ValueError as e:
-                    print(
-                        self.red(f"[!]  Invalid Choice Entered! | "),
-                        self.lmagenta(str(e)),
-                    )
-                    sys.exit(1)
-                except IndexError as e:
-                    print(
-                        self.red(f"[!]  This Episode is coming soon! | "),
-                        self.lmagenta(str(e)),
-                    )
-                    sys.exit(2)
-            else:
-                token = self.auth_token()
-                selection = result[int(choice) - 1]
-                if selection[-1] == "WS":
-                    season, episodes, episode = self.ask(
-                        selection[-2], selection[1], selection[0], token
-                    )
-                    page, name = self.wspage(
-                        [selection[0], selection[1], season, episode]
-                    )
-                    cdn, name = self.cdnurlep(page, name, token)
-                    self.play(cdn, name)
-                else:
-                    page = self.page(selection)
-                    cdn, name = self.cdnurl(page[0], selection[0], token)
-                    self.play(cdn, name)"""
-
     def SandR(self, q: str = None):
         return self.search(q)
 
@@ -296,9 +226,3 @@ class Theflix(WebScraper):
             self.dl(cdn, name)
             return
         self.play(cdn, name)
-
-    # def redo(self, query: str = None, result: int = None):
-    #    if query is None:
-    #        return self.display(self.search(), result)
-    #    else:
-    #        return self.display(self.search(query), result)
