@@ -2,7 +2,6 @@
 
 import os
 import platform
-import sys
 
 import click
 
@@ -10,7 +9,6 @@ from mov_cli.utils.scraper import WebScraper
 from mov_cli.websites.theflix import Theflix
 from mov_cli.websites.vidsrc import Vidsrc
 from mov_cli.websites.eja import eja
-from mov_cli.websites.trailers import trailers
 from mov_cli.websites.ask4movie import Ask4Movie
 from mov_cli.websites.ustvgo import ustvgo
 from mov_cli.websites.kimcartoon import kimcartoon
