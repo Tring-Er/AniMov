@@ -118,11 +118,9 @@ class Ask4Movie(WebScraper):
             url, season, episode = self.ask_direct_season(t[self.url])
         name = t[self.title]
         url = self.cdn_url(url)
-        # History.addhistory(self.userinput, state, "", season)
         if state == "d":
             self.dl(url, name, episode=episode, season=season)
             return
-        # update_presence(t[self.title], season)
         self.play(url, name)
 
     def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):

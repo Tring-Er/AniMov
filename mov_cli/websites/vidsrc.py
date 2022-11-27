@@ -129,11 +129,9 @@ class Vidsrc(WebScraper):
         url, enable = self.cdn_url(iframe)
         self.enabler(enable)
         print(url)
-        # History.addhistory(self.userinput, state, "", season)
         if state == "d":
             self.dl(url, name, season=season, episode=episode)
             return
-        # update_presence(t[self.title], season)
         self.play(url, name)
 
     def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):

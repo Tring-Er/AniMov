@@ -1,4 +1,3 @@
-import json
 
 from .actvid import Actvid
 from bs4 import BeautifulSoup as BS
@@ -9,19 +8,6 @@ class DopeBox(Actvid):
         super().__init__(base_url)
         self.base_url = base_url
         self.rep_key = "6LeWLCYeAAAAAL1caYzkrIY-M59Vu41vIblXQZ48"
-        # self.redo()
-
-    """def cdn_url(self, rabbid, rose, num):
-        self.client.set_headers({"X-Requested-With": "XMLHttpRequest"})
-        # data = json.loads(self.client.get(
-        #    f"https://rabbitstream.net/ajax/embed-4/getSources?id={rabbid}&_token={rose}&_number={num}"))['sources'][0][
-        #    'file']
-        data = json.loads(
-            self.client.get(
-                f"https://rabbitstream.net/ajax/embed-4/getSources?id={rabbid}&_token={rose}&_number={num}"
-            ).text
-        )["sources"][0]["file"]
-        return data"""
 
     def ask(self, series_id):
         r = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")

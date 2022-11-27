@@ -1,6 +1,4 @@
 import time
-# import multiprocessing as mp
-# import threading
 
 from .httpclient import HttpClient
 
@@ -21,17 +19,3 @@ class KP:
             print(x.text)
             time.sleep(self.time)
 
-    # def cr_th(self):
-    #    t1 = threading.Thread(target=asyncio.run(self.ping()))
-    #    t1.start()
-
-# def main():
-#    mp.set_start_method('spawn')
-#    x = KP("https://www.google.com", 2)
-#    m1 = mp.Process(asyncio.run(x.ping()))
-#    m1.start()
-#    m1.join()
-#    print("hello")
-#
-
-# main()

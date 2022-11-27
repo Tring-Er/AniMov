@@ -1,7 +1,5 @@
-import httpx
 from bs4 import BeautifulSoup as BS
 import urllib
-import os
 from ..utils.scraper import WebScraper
 
 

@@ -1,25 +1,13 @@
 import logging
 import os
-#import platform
 import re
 import subprocess
 import sys
 
-# import shlex
-# required for development
 from colorama import Fore, Style
 from .httpclient import HttpClient
 
-# Not needed
-# def determine_path() -> str:
-#    plt = platform.system()
-#    if plt == "Windows":
-#        return f"C://Users//{os.getenv('username')}//Downloads"
-#    elif (plt == "Linux") or (plt == "Darwin"):
-#        return f"/home/{os.getlogin()}/Downloads"
-#    else:
-#        print("Please open an issue for your os")
-#        sys.exit(-2)
+
 
 
 class WebScraper:

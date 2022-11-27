@@ -1,7 +1,5 @@
 import sys
 
-# import httpx
-
 sys.path.append("..")
 
 from ..utils.scraper import WebScraper
@@ -13,9 +11,6 @@ class OlgPly(WebScraper):
         super().__init__(base_url)
         self.base_url = base_url
 
-    # def search(self, query=None):
-    #    query = input(self.blue("[!] Please Enter the name of the Movie: ")) if query is None else query
-    #    return self.client.get(f'{self.base_url}/search?q={query}').text
 
     def search(self, q: str = None) -> list:
         q = (

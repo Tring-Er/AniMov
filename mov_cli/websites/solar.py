@@ -47,11 +47,3 @@ class Solar(Actvid):
         formated = formated.split(":")[0]
 
         return formated
-
-"""    def cdn_url(self, rabbid, rose, num) -> str:
-        self.client.set_headers({"X-Requested-With": "XMLHttpRequest"})
-        data = self.client.get(
-            f"https://rabbitstream.net/ajax/embed-4/getSources?id={rabbid}&_token={rose}&_number={num}"
-        ).json()["sources"][0]["file"]
-        return data
-"""
