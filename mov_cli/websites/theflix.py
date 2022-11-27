@@ -4,7 +4,7 @@ import json
 import httpx
 
 sys.path.append("..")
-from ..utils.scraper import WebScraper
+from mov_cli.utils.scraper import WebScraper
 from bs4 import BeautifulSoup as BS
 
 

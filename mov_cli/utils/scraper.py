@@ -4,7 +4,7 @@ import os
 import re
 import subprocess
 import sys
-import mov_cli.__main__ as movcli
+
 # import shlex
 # required for development
 from colorama import Fore, Style
@@ -147,6 +147,7 @@ class WebScraper:
         return self.results(self.search(q))
 
     def display(self, q: str = None, result_no: int = None):
+        import mov_cli.__main__ as movcli
         result = self.SandR(q)
         for ix, vl in enumerate(result):
             print(  
