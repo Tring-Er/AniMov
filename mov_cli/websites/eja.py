@@ -1,22 +1,24 @@
-from bs4 import BeautifulSoup as BS
 import urllib
+
+from bs4 import BeautifulSoup as BS
+
 from ..utils.scraper import WebScraper
 
 
-class eja(WebScraper):
+class Eja(WebScraper):
     def __init__(self, base_url):
         super().__init__(base_url)
         self.base_url = base_url
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:80.0) Gecko/20100101 Firefox/80.0"}
 
     def search(self, q: str = None):
-        q =( 
+        q = (
             input(self.blue("[!] Enter a Channel: "))
             if q is None
             else q
         )
         return q
-    
+
     def results(self, q: str) -> list:
         q = q.replace(" ", "+")
         self.client.set_headers(self.headers)
@@ -27,16 +29,16 @@ class eja(WebScraper):
                 for i in range(len(col))
                 ]
         title = [col[i].findAll("a")[1].text
-                for i in range(len(col))
-                ]
+                 for i in range(len(col))
+                 ]
         ids = [col[i].findAll("a")[1]["href"].strip("?")
-                for i in range(len(col))]
+               for i in range(len(col))]
         mov_or_tv = [col[i].findAll("img")[0]["alt"]
-            for i in range(len(col))
-        ]
+                     for i in range(len(col))
+                     ]
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
-    def get_hls(self, url):
+    def get_hls(self, url: str):
         link = urllib.request.urlopen(f"https://eja.tv/?{url}").geturl()
         print(link)
         link = "".join(link)
@@ -53,7 +55,5 @@ class eja(WebScraper):
             return
         self.play(url, name)
 
-
-    
-    def sandr(self, q: str = None):
+    def sand_r(self, q: str = None):
         return self.results(self.search(q))

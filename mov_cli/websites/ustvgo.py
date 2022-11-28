@@ -54,5 +54,5 @@ class ustvgo(WebScraper):
         self.play(url, name)
 
 
-    def sandr(self, q: str = None):
+    def sand_r(self, q: str = None):
         return self.results(q)

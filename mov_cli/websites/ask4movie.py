@@ -1,8 +1,10 @@
-from bs4 import BeautifulSoup as BS
-from ..utils.scraper import WebScraper
 import re
 import base64
 import httpx
+
+from bs4 import BeautifulSoup as BS
+
+from ..utils.scraper import WebScraper
 
 
 class Ask4Movie(WebScraper):
@@ -42,13 +44,13 @@ class Ask4Movie(WebScraper):
         txt = base64.b64decode(regs)
         txt = txt.decode("utf-8")
         soup = BS(txt, "lxml")
-        reslink = soup.find("iframe")["src"]
-        reslink = reslink.split("/")[4]
-        return reslink
+        res_link = soup.find("iframe")["src"]
+        res_link = res_link.split("/")[4]
+        return res_link
 
     def ask_direct_season(self, show_url):
-        reslink = self.get_link(show_url)
-        response = self.client.get(f"https://cinegrabber.com/p/{reslink}").text
+        res_link = self.get_link(show_url)
+        response = self.client.get(f"https://cinegrabber.com/p/{res_link}").text
         soup = BS(response, "lxml")
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})
@@ -70,9 +72,9 @@ class Ask4Movie(WebScraper):
             )
         )
         season = seasons[len(seasons) - int(season)]
-        seasonlink = season.find("a")["href"]
-        reslink = self.get_link(seasonlink)
-        response_seasons = self.client.get(f"https://cinegrabber.com/p/{reslink}").text
+        season_link = season.find("a")["href"]
+        res_link = self.get_link(season_link)
+        response_seasons = self.client.get(f"https://cinegrabber.com/p/{res_link}").text
         soup = BS(response_seasons, "lxml")
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})
@@ -90,17 +92,17 @@ class Ask4Movie(WebScraper):
         return self.get_link(url)
     
     def cdn_url(self, url):
-        postheaders = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0", "Referer": f"https://cinegrabber.com/v/{url}", "Origin": "https://cinegrabber.com"}
+        post_headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0", "Referer": f"https://cinegrabber.com/v/{url}", "Origin": "https://cinegrabber.com"}
         url = f"https://cinegrabber.com/api/source/{url}"
-        response = httpx.post(url, headers=postheaders).json()
+        response = httpx.post(url, headers=post_headers).json()
         print(url)
         url = response["data"][len(["data"]) + 1]["file"]
         print(url)
         return url
     
-    def directshowdownload(self, t: list):
-        reslink = self.get_link(t[self.url])
-        response = self.client.get(f"https://cinegrabber.com/p/{reslink}").text
+    def direct_show_download(self, t: list):
+        res_link = self.get_link(t[self.url])
+        response = self.client.get(f"https://cinegrabber.com/p/{res_link}").text
         soup = BS(response, "lxml")
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})
@@ -116,7 +118,7 @@ class Ask4Movie(WebScraper):
                 return
             else:
                 # TODO: check wtf is that
-                url, season, episode = self.directshowdownload(t)
+                url, season, episode = self.direct_show_download(t)
                 return
         if t[self.url].__contains__("channel"):
             url, season, episode = self.ask_season(t[self.url])
@@ -131,7 +133,7 @@ class Ask4Movie(WebScraper):
 
     def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title]
-        url =self.movie(m[self.url])
+        url = self.movie(m[self.url])
         url = self.cdn_url(url)
         if state == "d":
             self.dl(url, name)
@@ -141,7 +143,7 @@ class Ask4Movie(WebScraper):
             return
         self.play(url, name)
 
-    def sandr(self, q: str = None):
+    def sand_r(self, q: str = None):
         return self.results(self.search(q))
 
 

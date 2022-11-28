@@ -1,5 +1,6 @@
-from .actvid import Actvid
 from bs4 import BeautifulSoup as BS
+
+from .actvid import Actvid
 
 
 class Solar(Actvid):
@@ -10,19 +11,19 @@ class Solar(Actvid):
         self.redo()
 
     def ask(self, series_id):
-        r = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
+        response_season = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
         season_ids = [
-            i["data-id"] for i in BS(r, "lxml").select(".dropdown-item")
+            i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
         ]
         season = input(
             self.lmagenta(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
             )
         )
-        rf = self.client.get(
+        response_season_ids = self.client.get(
             f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
         )
-        episodes = [i["data-id"] for i in BS(rf, "lxml").select(".eps-item")]
+        episodes = [i["data-id"] for i in BS(response_season_ids, "lxml").select(".eps-item")]
         episode = episodes[
             int(
                 input(

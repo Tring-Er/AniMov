@@ -4,7 +4,7 @@ import platform
 import click
 
 from mov_cli.utils.scraper import WebScraper
-from mov_cli.websites.theflix import Theflix
+from mov_cli.websites.theflix import TheFlix
 from mov_cli.websites.vidsrc import Vidsrc
 from mov_cli.websites.eja import eja
 from mov_cli.websites.ask4movie import Ask4Movie
@@ -19,7 +19,7 @@ from mov_cli.utils.onstartup import startup
 
 
 calls = {
-    "theflix": [Theflix, "https://theflix.to"],
+    "theflix": [TheFlix, "https://theflix.to"],
     "vidsrc": [Vidsrc, "https://v2.vidsrc.me"],
     "eja": [eja, "https://eja.tv"],
     "ask4movie": [Ask4Movie, "https://ask4movie.mx"],
@@ -74,7 +74,7 @@ The name of the provider""",
     help="The Result Number you want to be played",
     type=int,
 )
-def movcli(provider, query, result):  # TODO add regex
+def mov_cli(provider, query, result):  # TODO add regex
     try:
         provider_data = calls.get(provider, calls["theflix"])
         provider: WebScraper = provider_data[0](provider_data[1])
@@ -87,4 +87,4 @@ def movcli(provider, query, result):  # TODO add regex
 
 
 if __name__ == '__main__':
-    movcli()
+    mov_cli()

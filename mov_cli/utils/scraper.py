@@ -131,12 +131,12 @@ class WebScraper:
     def mov_pand_dp(self, m: list, state: str = "d" or "p"):
         pass
 
-    def sandr(self, q: str = None):
+    def sand_r(self, q: str = None):
         return self.results(self.search(q))
 
     def display(self, q: str = None, result_no: int = None):
         import mov_cli.__main__ as movcli
-        result = self.sandr(q)
+        result = self.sand_r(q)
         for ix, vl in enumerate(result):
             print(  
                 self.green(f"[{ix + 1}] {vl[self.title]} {vl[self.mv_tv]}"), end="\n\n"
@@ -156,7 +156,7 @@ class WebScraper:
             elif choice == "s":
                 return self.redo()
             elif choice == "p":
-                return movcli.movcli()
+                return movcli.mov_cli()
             elif choice == "d":
                 try:
                     mov_or_tv = result[

@@ -2,12 +2,14 @@ import re
 import sys
 import base64
 import hashlib
+import json
 from Cryptodome.Cipher import AES
 from typing import Callable, Any
 from urllib import parse as p
-from ..utils.scraper import WebScraper
+
 from bs4 import BeautifulSoup as BS
-import json
+
+from ..utils.scraper import WebScraper
 from ..utils.onstartup import startup
 
 sys.path.append("..")
@@ -61,18 +63,18 @@ class Actvid(WebScraper):
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
     def ask(self, series_id: str) -> tuple:
-        r = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
+        response_season = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
         season_ids = [
-            i["data-id"] for i in BS(r, "lxml").select(".dropdown-item")
+            i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
         ]
         season = input(
             self.lmagenta(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
             )
         )
-        z = f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
-        rf = self.client.get(z)
-        episodes = [i["data-id"] for i in BS(rf, "lxml").select(".nav-item > a")]
+        link_season_ids = f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
+        response_season_ids = self.client.get(link_season_ids)
+        episodes = [i["data-id"] for i in BS(response_season_ids, "lxml").select(".nav-item > a")]
         episode = episodes[
             int(
                 input(
@@ -219,7 +221,7 @@ class Actvid(WebScraper):
             return
         self.play(url, name)
 
-    def sandr(self, q: str = None):
+    def sand_r(self, q: str = None):
         return self.results(self.search(q))
 
     def redo(self, query: str = None, result: int = None):
