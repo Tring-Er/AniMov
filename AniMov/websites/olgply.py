@@ -11,7 +11,6 @@ class OlgPly(WebScraper):
         super().__init__(base_url)
         self.base_url = base_url
 
-
     def search(self, q: str = None) -> list:
         q = (
             input(self.blue("[!] Please Enter the name of the Movie: "))
@@ -24,7 +23,7 @@ class OlgPly(WebScraper):
 
     def cdn_url(self, name):
         imdb_id = get_imdb_id(name)
-        req = httpx.get(
+        response = httpx.get(
             f"https://olgply.com/api/?imdb={imdb_id}",
             headers={
                 "User-Agent": "Mozilla/5.0 (X11; Linux "
@@ -33,7 +32,7 @@ class OlgPly(WebScraper):
                               "Firefox/100.0"
             },
         ).text
-        url = re.findall(r"https?:[a-zA-Z\d.+-/#~]+\.mp4", req)
+        url = re.findall(r"https?:[a-zA-Z\d.+-/#~]+\.mp4", response)
         print(url)
         return url[0], name
 
@@ -60,7 +59,7 @@ class OlgPly(WebScraper):
         print(url)
         return url[0], name
 
-    def ask(self, tmdb_id, name):
+    def ask(self, tmdb_id: str, name: str):
         seasons = get_season_seasons(tmdb_id, name)
         season = input(
             self.lmagenta(f"Please input the season number(total seasons:{seasons}): ")
@@ -100,8 +99,8 @@ class OlgPly(WebScraper):
                         ]
                     name = mov[0]
                     if mov[-1] == "TV":
-                        cdnurl, name = self.ask(mov[2], name)
-                        self.dl(cdnurl, name)
+                        cdn_url, name = self.ask(mov[2], name)
+                        self.dl(cdn_url, name)
                     else:
                         cdn, name = self.cdn_url(name)
                         self.dl(cdn, name)
@@ -120,8 +119,8 @@ class OlgPly(WebScraper):
             else:
                 selection = result[int(choice) - 1]
                 if selection[-1] == "TV":
-                    cdnurl, name = self.ask(selection[2], selection[0])
-                    self.play(cdnurl, name)
+                    cdn_url, name = self.ask(selection[2], selection[0])
+                    self.play(cdn_url, name)
                 else:
                     cdn, name = self.cdn_url(selection[0])
                     self.play(cdn, name)

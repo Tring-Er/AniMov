@@ -1,27 +1,28 @@
-from .actvid import Actvid
 from bs4 import BeautifulSoup as BS
 
+from .actvid import Actvid
 
-class Sflix(Actvid):
+
+class DopeBox(Actvid):
     def __init__(self, base_url) -> None:
         super().__init__(base_url)
         self.base_url = base_url
         self.rep_key = "6LeWLCYeAAAAAL1caYzkrIY-M59Vu41vIblXQZ48"
 
     def ask(self, series_id):
-        r = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
+        response_series_id = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
         season_ids = [
-            i["data-id"] for i in BS(r, "lxml").select(".dropdown-item")
+            i["data-id"] for i in BS(response_series_id, "lxml").select(".dropdown-item")
         ]
         season = input(
             self.lmagenta(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
             )
         )
-        rf = self.client.get(
+        response_episodes = self.client.get(
             f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
         )
-        episodes = [i["data-id"] for i in BS(rf, "lxml").select(".episode-item")]
+        episodes = [i["data-id"] for i in BS(response_episodes, "lxml").select(".episode-item")]
         episode = episodes[
             int(
                 input(
@@ -32,10 +33,10 @@ class Sflix(Actvid):
             )
             - 1
         ]
-        ep = self.getep(f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}", data_id=episode)
+        ep = self.get_ep(f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}", data_id=episode)
         return episode, season, ep
 
-    def getep(self, url, data_id):
+    def get_ep(self, url, data_id):
         source = self.client.get(f"{url}").text
         soup = BS(source, "lxml")
 
@@ -51,13 +52,13 @@ class Sflix(Actvid):
         return text
 
     def server_id(self, mov_id):
-        rem = self.client.get(f"{self.base_url}/ajax/movie/episodes/{mov_id}")
-        soup = BS(rem, "lxml")
+        response = self.client.get(f"{self.base_url}/ajax/movie/episodes/{mov_id}")
+        soup = BS(response, "lxml")
         return [i["data-id"] for i in soup.select(".link-item")][0]
 
     def ep_server_id(self, ep_id):
-        rem = self.client.get(
+        response = self.client.get(
             f"{self.base_url}/ajax/v2/episode/servers/{ep_id}/#servers-list"
         )
-        soup = BS(rem, "lxml")
+        soup = BS(response, "lxml")
         return [i["data-id"] for i in soup.select(".link-item")][0]

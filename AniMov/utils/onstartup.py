@@ -1,11 +1,10 @@
-import httpx
 import platform
-import os
-from os import environ
+from os import environ, getlogin
 
-class startup:
-    def __init__(self):
-        pass
+import httpx
+
+
+class Startup:
 
     @staticmethod
     def winorlinux():
@@ -13,9 +12,9 @@ class startup:
         if plt == "Windows":
             return f'{environ["USERPROFILE"]}'
         elif plt == "Linux":
-            return f"/home/{os.getlogin()}"
+            return f"/home/{getlogin()}"
         elif plt == "Darwin":
-            return f"/Users/{os.getlogin()}"
+            return f"/Users/{getlogin()}"
     
     @staticmethod
     def getkey():
@@ -28,6 +27,6 @@ class startup:
         else:
             decryptkey = "https://raw.githubusercontent.com/consumet/rapidclown/rabbitstream/key.txt"
         u = httpx.get(decryptkey).text
-        with open(f"{startup.winorlinux()}/movclikey.txt", "w") as f:
+        with open(f"{Startup.winorlinux()}/movclikey.txt", "w") as f:
             f.write(u)
             
