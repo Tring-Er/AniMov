@@ -1,16 +1,17 @@
-from bs4 import BeautifulSoup as BS
-import os
+import httpx
 import threading
 import sys
-from ..utils.scraper import WebScraper
-from ..utils.keep_alive import KP
 import re
 
+from ..utils.scraper import WebScraper
+from ..utils.keep_alive import KP
+
+from bs4 import BeautifulSoup as BS
+
 sys.path.append("..")
-import httpx
 
 
-class Vidsrc(WebScraper):
+class VidSrc(WebScraper):
     def __init__(self, base_url):
         super().__init__(base_url)
         self.base_url = base_url
@@ -34,48 +35,51 @@ class Vidsrc(WebScraper):
     def results(self, html: str) -> list:
         data = httpx.get(f"https://v2.sg.media-imdb.com/suggestion/{html[0]}/{html}.json", headers=self.headers).json()
         ids = [data["d"][i]["id"] for i in range(len(data["d"]))]
-        def titlename(num):
+
+        def title_name(num):
             try:
                 name = f'{data["d"][num]["l"]}, {data["d"][num]["y"]},'
                 return name
             except:
                 return f'{data["d"][num]["l"]}, UNKNOWN,'
-        title = [titlename(i)
-        for i in range(len(data["d"]))]
+
+        title = [title_name(i)
+                 for i in range(len(data["d"]))]
         urls = ["/embed/" + data["d"][i]["id"] for i in range(len(data["d"]))]
-        def movtv(num):
+
+        def mov_tv(num):
             try:
                 if data["d"][num]["qid"].__contains__("tvSeries"):
-                    return "TV"  
+                    return "TV"
                 else:
                     return "MOVIE"
             except:
                 return "UNKNOWN"
-                    
-        mov_or_tv =[movtv(i) for i in range(len(data["d"]))]
-        
+
+        mov_or_tv = [mov_tv(i) for i in range(len(data["d"]))]
+
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
-    def get_playeriframe(self, embed):
+    def get_player_iframe(self, embed):
         url = self.base_url + embed
-        re = httpx.get(url, headers=self.headers)
+        response = httpx.get(url, headers=self.headers)
         print(url)
-        soup = BS(re, "lxml")
+        soup = BS(response, "lxml")
         iframe = soup.find("iframe", {"id": "player_iframe"})
         iframe = iframe["src"]
         iframe = iframe.split("/")[4]
         return iframe
 
     def ask(self, imdb: str):
-        re = self.client.get(f"https://www.imdb.com/title/{imdb}/episodes")
-        soup = BS(re, "lxml")
+        response_season = self.client.get(f"https://www.imdb.com/title/{imdb}/episodes")
+        soup = BS(response_season, "lxml")
         seasons = soup.find("h3", {"id": "episode_top"}).text.strip("Season")
         season = input(
             self.lmagenta(
                 f"Please input the season number(total seasons:{seasons}): "
             ))
-        z = self.client.get(f"https://www.imdb.com/title/{imdb}/episodes?season={season}")
-        soup = BS(z, "lxml")
+        response_episodes = self.client.get(f"https://www.imdb.com/title/{imdb}/episodes?season={season}")
+        soup = BS(response_episodes, "lxml")
         episodes = soup.findAll("div", {"class": "list_item"})
         episode = input(
             self.lmagenta(
@@ -86,46 +90,46 @@ class Vidsrc(WebScraper):
 
     def cdn_url(self, iframe):
         stream = self.stream + iframe
-        res = httpx.get(stream, headers=self.streamh).text
-        soup = BS(res, "lxml")
+        response = httpx.get(stream, headers=self.streamh).text
+        soup = BS(response, "lxml")
         scripts = soup.find_all("script")
         script = scripts[7]
         script = "".join(script)
         path = script.split("=")[4]
-        actlink = script.split("=")[3]
-        actlink = actlink.split('"')[1]
+        act_link = script.split("=")[3]
+        act_link = act_link.split('"')[1]
         path = path.split('"')[0]
-        actlink = "https:" + actlink + "=" + path
-        print(actlink)
+        act_link = "https:" + act_link + "=" + path
+        print(act_link)
         url = re.findall("""hls\.loadSource['(']['"]([^"']*)['"][')"][;]""", script)[0]
-        t1 = threading.Thread(target=self.keep_alive.ping, args=(actlink, self.finalheaders))
+        t1 = threading.Thread(target=self.keep_alive.ping, args=(act_link, self.finalheaders))
         t1.start()
-        return url, actlink
+        return url, act_link
 
     def enabler(self, path):
         test = httpx.get(path, headers=self.finalheaders).text
         return
-    
-    def showdownload(self, t: list):
-        re = self.client.get(f"https://www.imdb.com/title/{t[self.aid]}/episodes")
-        soup = BS(re, "lxml")
+
+    def show_download(self, t: list):
+        response_seasons = self.client.get(f"https://www.imdb.com/title/{t[self.aid]}/episodes")
+        soup = BS(response_seasons, "lxml")
         seasons = soup.find("h3", {"id": "episode_top"}).text.strip("Season")
         for i in range(int(seasons)):
-            z = self.client.get(f"https://www.imdb.com/title/{t[self.aid]}/episodes?season={i+1}")
-            soup = BS(z, "lxml")
+            response_episodes = self.client.get(f"https://www.imdb.com/title/{t[self.aid]}/episodes?season={i + 1}")
+            soup = BS(response_episodes, "lxml")
             episodes = soup.findAll("div", {"class": "list_item"})
             for e in range(len(episodes)):
-                iframe = self.get_playeriframe(f"{t[self.url]}/{i + 1}-{e + 1}")
+                iframe = self.get_player_iframe(f"{t[self.url]}/{i + 1}-{e + 1}")
                 url, enable = self.cdn_url(iframe)
                 self.enabler(enable)
-                self.dl(url, t[self.title], season=i+1, episode=e+1)
-                
-    def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
+                self.dl(url, t[self.title], season=i + 1, episode=e + 1)
+
+    def tv_pand_dp(self, infos: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
-            self.showdownload(t)
-        name = t[self.title]
-        season, episode = self.ask(t[self.aid])
-        iframe = self.get_playeriframe(f"{t[self.url]}/{season}-{episode}")
+            self.show_download(infos)
+        name = infos[self.title]
+        season, episode = self.ask(infos[self.aid])
+        iframe = self.get_player_iframe(f"{infos[self.url]}/{season}-{episode}")
         url, enable = self.cdn_url(iframe)
         self.enabler(enable)
         print(url)
@@ -134,9 +138,9 @@ class Vidsrc(WebScraper):
             return
         self.play(url, name)
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
-        name = m[self.title]
-        iframe = self.get_playeriframe(f"{m[self.url]}")
+    def mov_pand_dp(self, infos: list, state: str = "d" or "p" or "sd"):
+        name = infos[self.title]
+        iframe = self.get_player_iframe(f"{infos[self.url]}")
         url, enable = self.cdn_url(iframe)
         self.enabler(enable)
         if state == "d":

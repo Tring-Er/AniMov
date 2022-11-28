@@ -5,7 +5,7 @@ import click
 
 from mov_cli.utils.scraper import WebScraper
 from mov_cli.websites.theflix import TheFlix
-from mov_cli.websites.vidsrc import Vidsrc
+from mov_cli.websites.vidsrc import VidSrc
 from mov_cli.websites.eja import eja
 from mov_cli.websites.ask4movie import Ask4Movie
 from mov_cli.websites.ustvgo import ustvgo
@@ -20,7 +20,7 @@ from mov_cli.utils.onstartup import startup
 
 calls = {
     "theflix": [TheFlix, "https://theflix.to"],
-    "vidsrc": [Vidsrc, "https://v2.vidsrc.me"],
+    "vidsrc": [VidSrc, "https://v2.vidsrc.me"],
     "eja": [eja, "https://eja.tv"],
     "ask4movie": [Ask4Movie, "https://ask4movie.mx"],
     "ustvgo": [ustvgo, "https://ustvgo.tv"],
