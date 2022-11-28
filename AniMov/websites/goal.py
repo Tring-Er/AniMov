@@ -1,4 +1,4 @@
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
 
 
 class Goal9(WebScraper):

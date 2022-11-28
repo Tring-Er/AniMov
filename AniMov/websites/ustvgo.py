@@ -1,8 +1,8 @@
 import re
 
-from ..utils.scraper import WebScraper
-
 from bs4 import BeautifulSoup as BS
+
+from AniMov.elements.WebScraper import WebScraper
 
 
 class Ustvgo(WebScraper):

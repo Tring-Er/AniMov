@@ -9,7 +9,7 @@ from urllib import parse as p
 
 from bs4 import BeautifulSoup as BS
 
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
 from ..utils.onstartup import windows_or_linux
 
 sys.path.append("..")

@@ -4,7 +4,7 @@ import httpx
 
 from bs4 import BeautifulSoup as BS
 
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
 
 
 class Ask4Movie(WebScraper):

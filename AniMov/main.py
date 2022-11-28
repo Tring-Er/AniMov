@@ -1,7 +1,7 @@
 import os
 import platform
 
-from AniMov.utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
 from AniMov.websites.theflix import TheFlix
 from AniMov.websites.vidsrc import VidSrc
 from AniMov.websites.eja import Eja

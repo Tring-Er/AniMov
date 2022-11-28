@@ -5,7 +5,7 @@ import httpx
 
 from bs4 import BeautifulSoup as BS
 
-from AniMov.utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
 
 
 sys.path.append("..")
