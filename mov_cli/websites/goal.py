@@ -23,7 +23,7 @@ class goal9(WebScraper):
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
     
-    def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             print("You can't Showdownload Football Match!?") # IF you call it soccer you clearly have made something wrong in life
             return
@@ -32,7 +32,7 @@ class goal9(WebScraper):
             return
         self.play(m[self.url], m[self.title])
         
-    def SandR(self, q: str = None):
+    def sandr(self, q: str = None):
         return self.results(self.search(q))
 
 

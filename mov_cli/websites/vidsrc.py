@@ -120,7 +120,7 @@ class Vidsrc(WebScraper):
                 self.enabler(enable)
                 self.dl(url, t[self.title], season=i+1, episode=e+1)
                 
-    def TV_PandDP(self, t: list, state: str = "d" or "p" or "sd"):
+    def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             self.showdownload(t)
         name = t[self.title]
@@ -134,7 +134,7 @@ class Vidsrc(WebScraper):
             return
         self.play(url, name)
 
-    def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title]
         iframe = self.get_playeriframe(f"{m[self.url]}")
         url, enable = self.cdn_url(iframe)
@@ -147,5 +147,5 @@ class Vidsrc(WebScraper):
             return
         self.play(url, name)
 
-    def SandR(self, q: str = None):
+    def sandr(self, q: str = None):
         return self.results(self.search(q))

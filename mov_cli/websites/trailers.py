@@ -73,7 +73,7 @@ class trailers(WebScraper):
                 name = t[self.title]
                 url = self.shows_cdn_url(s+1, e+1, t[self.url])
                 self.dl(url, name, season=s+1, episode=e+1)
-    def TV_PandDP(self, t: list, state: str = "d" or "p" or "sd"):
+    def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             self.showdownload(t)
             return
@@ -88,7 +88,7 @@ class trailers(WebScraper):
         print("Seeking is Disabled with Trailers")
         self.play(url, name)
 
-    def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title]
         url = self.mov_cdn_url(m[self.url])
         if state == "d":

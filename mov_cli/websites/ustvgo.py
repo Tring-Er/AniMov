@@ -45,7 +45,7 @@ class ustvgo(WebScraper):
         return uri
 
     
-    def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title]
         url = self.streamlink(f"{m[self.url]}")
         if state == "d":
@@ -54,5 +54,5 @@ class ustvgo(WebScraper):
         self.play(url, name)
 
 
-    def SandR(self, q: str = None):
+    def sandr(self, q: str = None):
         return self.results(q)

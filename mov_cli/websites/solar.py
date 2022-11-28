@@ -33,10 +33,10 @@ class Solar(Actvid):
             )
             - 1
         ]
-        ep = self.getep(f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}", episode)
+        ep = self.get_ep(f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}", episode)
         return episode, season, ep
 
-    def getep(self, url, data_id):
+    def get_ep(self, url, data_id):
         source = self.client.get(f"{url}").text
 
         soup = BS(source, "lxml")

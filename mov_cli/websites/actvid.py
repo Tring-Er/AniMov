@@ -83,11 +83,11 @@ class Actvid(WebScraper):
             )
             - 1
             ]
-        ep = self.getep(url=f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}",
-                        data_id=f"{episode}")
+        ep = self.get_ep(url=f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}",
+                         data_id=f"{episode}")
         return episode, season, ep
 
-    def getep(self, url, data_id):
+    def get_ep(self, url: str, data_id: str):
         source = self.client.get(f"{url}").text
 
         soup = BS(source, "lxml")
@@ -112,23 +112,23 @@ class Actvid(WebScraper):
         return source[0]['file']
 
     def server_id(self, mov_id: str) -> str:
-        req = self.client.get(f"{self.base_url}/ajax/movie/episodes/{mov_id}")
-        soup = BS(req, "lxml")
+        response = self.client.get(f"{self.base_url}/ajax/movie/episodes/{mov_id}")
+        soup = BS(response, "lxml")
         return [i["data-linkid"] for i in soup.select(".nav-item > a")][0]
 
     def ep_server_id(self, ep_id: str) -> str:
-        req = self.client.get(
+        response = self.client.get(
             f"{self.base_url}/ajax/v2/episode/servers/{ep_id}/#servers-list"
         )
-        soup = BS(req, "lxml")
+        soup = BS(response, "lxml")
         return [i["data-id"] for i in soup.select(".nav-item > a")][0]
 
     def get_link(self, thing_id: str) -> tuple:
-        req = self.client.get(f"{self.base_url}/ajax/get_link/{thing_id}").json()[
+        response = self.client.get(f"{self.base_url}/ajax/get_link/{thing_id}").json()[
             "link"
         ]
-        print(req)
-        return req, self.rabbit_id(req)
+        print(response)
+        return response, self.rabbit_id(response)
 
     def rabbit_id(self, url: str) -> tuple:
         parts = p.urlparse(url, allow_fragments=True, scheme="/").path.split("/")
@@ -148,58 +148,56 @@ class Actvid(WebScraper):
             u = f.read()
         return bytes(u, 'utf-8')
 
-
     def md5(self, data):
         return hashlib.md5(data).digest()
 
-    def get_key(self, salt, key):
-        x = self.md5(key + salt)
-        currentkey = x
-        while (len(currentkey) < 48):
-            x = self.md5(x + key + salt)
-            currentkey += x
+    def get_key(self, salt, raw_key):
+        key = self.md5(raw_key + salt)
+        currentkey = key
+        while len(currentkey) < 48:
+            x = self.md5(key + raw_key + salt)
+            currentkey += key
         return currentkey
 
     def unpad(self, s):
         return s[:-ord(s[len(s) - 1:])]
 
-    def decrypt(self, data, key):
-        k = self.get_key(
-            base64.b64decode(data)[8:16], key
+    def decrypt(self, data, raw_key):
+        key = self.get_key(
+            base64.b64decode(data)[8:16], raw_key
         )
-        dec_key = k[:32]
-        iv = k[32:]
+        dec_key = key[:32]
+        iv = key[32:]
         p = AES.new(dec_key, AES.MODE_CBC, iv=iv).decrypt(
             base64.b64decode(data)[16:]
         )
         return self.unpad(p).decode()
     
     def download(self, series_id: str, name):
-        r = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
+        response_season = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
         season_ids = [
-            i["data-id"] for i in BS(r, "lxml").select(".dropdown-item")
+            i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
         ]
         for s in range(len(season_ids)):
-            z = f"{self.base_url}/ajax/v2/season/episodes/{season_ids[s]}"
-            rf = self.client.get(z)
-            episodes = [i["data-id"] for i in BS(rf, "lxml").select(".nav-item > a")]
-            for e in range(len(episodes)):
-                episode = episodes[e]
-                sid = self.ep_server_id(episode)
-                iframe_url, tv_id = self.get_link(sid)
+            formatted_link = f"{self.base_url}/ajax/v2/season/episodes/{season_ids[s]}"
+            response_formatted_link = self.client.get(formatted_link)
+            episodes = [i["data-id"] for i in BS(response_formatted_link, "lxml").select(".nav-item > a")]
+            for eps in range(len(episodes)):
+                episode = episodes[eps]
+                server_id = self.ep_server_id(episode)
+                iframe_url, tv_id = self.get_link(server_id)
                 iframe_link, iframe_id = self.rabbit_id(iframe_url)
                 url = self.cdn_url(iframe_link, iframe_id)
-                self.dl(url, name, season=s +1, episode=e +1)
+                self.dl(url, name, season=s + 1, episode=eps + 1)
 
-
-    def TV_PandDP(self, t: list, state: str = "d" or "p" or "sd"):
-        name = t[self.title]
+    def tv_pand_dp(self, title: list, state: str = "d" or "p" or "sd"):
+        name = title[self.title]
         if state == "sd":
-            self.download(t[self.aid],name)
+            self.download(title[self.aid], name)
             return
-        episode, season, ep = self.ask(t[self.aid])
-        sid = self.ep_server_id(episode)
-        iframe_url, tv_id = self.get_link(sid)
+        episode, season, ep = self.ask(title[self.aid])
+        server_id = self.ep_server_id(episode)
+        iframe_url, tv_id = self.get_link(server_id)
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
         if state == "d":
@@ -207,7 +205,7 @@ class Actvid(WebScraper):
             return
         self.play(url, name)
 
-    def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title]
         sid = self.server_id(m[self.aid])
         iframe_url, tv_id = self.get_link(sid)
@@ -221,7 +219,7 @@ class Actvid(WebScraper):
             return
         self.play(url, name)
 
-    def SandR(self, q: str = None):
+    def sandr(self, q: str = None):
         return self.results(self.search(q))
 
     def redo(self, query: str = None, result: int = None):

@@ -45,7 +45,7 @@ class eja(WebScraper):
         print(link)
         return link
 
-    def MOV_PandDP(self, m: list, state: str = "d" or "p"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p"):
         name = m[self.title]
         url = self.get_hls(m[self.aid])
         if state == "d":
@@ -55,5 +55,5 @@ class eja(WebScraper):
 
 
     
-    def SandR(self, q: str = None):
+    def sandr(self, q: str = None):
         return self.results(self.search(q))

@@ -201,10 +201,10 @@ class Theflix(WebScraper):
         )
         return season, episodes, episode
 
-    def SandR(self, q: str = None):
+    def sandr(self, q: str = None):
         return self.search(q)
 
-    def MOV_PandDP(self, m: list, state: str = "d" or "p"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p"):
         name = m[self.title]
         self.userinput = f"{name}"
         page = self.page(m)
@@ -214,7 +214,7 @@ class Theflix(WebScraper):
             return
         self.play(url, name)
 
-    def TV_PandDP(self, t: list, state: str = "d" or "p"):
+    def tv_pand_dp(self, t: list, state: str = "d" or "p"):
         name = t[self.title]
         season, episodes, episode = self.ask(
             t[self.seasons], t[self.aid], name, self.token
