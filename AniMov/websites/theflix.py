@@ -3,10 +3,12 @@ import sys
 import json
 import httpx
 
-sys.path.append("..")
 from bs4 import BeautifulSoup as BS
 
 from AniMov.utils.scraper import WebScraper
+
+
+sys.path.append("..")
 
 
 class TheFlix(WebScraper):

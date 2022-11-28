@@ -91,6 +91,3 @@ class KimCartoon(WebScraper):
             self.dl(url, name)
             return
         self.play(url, name)
-
-
-

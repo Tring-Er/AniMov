@@ -24,7 +24,7 @@ class Goal9(WebScraper):
 
     def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
-            print("You can't Showdownload Football Match!?") # IF you call it soccer you clearly have made something wrong in life
+            print("You can't Showdownload Football Match!?")
             return
         if state == "d":
             self.dl(m[self.url], m[self.title])
@@ -33,8 +33,3 @@ class Goal9(WebScraper):
         
     def sand_r(self, q: str = None):
         return self.results(self.search(q))
-
-
-
-
-

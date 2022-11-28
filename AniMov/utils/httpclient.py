@@ -43,7 +43,6 @@ class HttpClient:
 
     def set_headers(self, header: dict) -> None:
         self.session.headers = header
-        # do not use this!
 
     def add_elem(self, elements: dict) -> None:
         for i in elements.items():

@@ -55,7 +55,6 @@ class WebScraper:
         else:
             fixname = f"{fixname}S{season}E{episode}"
 
-        # args = shlex.split(f 'ffmpeg -i "{url}" -c copy {self.parse(name)}.mp4')
         args = [
         'ffmpeg',
         '-n', 
@@ -75,7 +74,6 @@ class WebScraper:
         ]
 
         if subtitle:
-            # args.extend(f'-vf subtitle="{subtitle}" {self.parse(name)}.mp4')
             args.extend(
                 ["-vf", f"subtitle={subtitle}", f"{fixname}.mp4"]
             )
@@ -96,10 +94,10 @@ class WebScraper:
                 ]
 
                 mpv_process = subprocess.Popen(
-                    args  # stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL
+                    args
                 )
                 mpv_process.wait()
-            except ModuleNotFoundError:  # why do you even exist if you don't have MPV installed? WHY?
+            except ModuleNotFoundError:
                 args = [
                     "vlc",
                     f"--http-referrer={self.base_url}",
@@ -108,22 +106,19 @@ class WebScraper:
                     "--no-terminal",
                 ]
                 vlc_process = subprocess.Popen(
-                    args  # stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL
+                    args
                 )
                 vlc_process.wait()
         except Exception as e:
             txt = f"{self.red('[!]')} Could not play {name}: MPV or VLC not found | {e}"
             logging.log(logging.ERROR, txt)
-            # print(txt)  # TODO implement logging to a file
             sys.exit(1)
 
     def search(self, q: str = None) -> str:
         pass
-        # return NotImplementedError()
 
     def results(self, data: str) -> list:
         pass
-        # return NotImplementedError()
 
     def tv_pand_dp(self, t: list, state: str = "d" or "p"):
         pass

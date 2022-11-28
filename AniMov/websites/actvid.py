@@ -30,10 +30,6 @@ class Actvid(WebScraper):
         self.rab_domain = x(
             "https://rabbitstream.net:443"
         )
-        # encoding and then decoding the url
-        # self.redo()
-        # IMP: self.client.get/post always returns a response object
-        # self.client.post/get -> httpx.response
 
     def search(self, query: str = None) -> str:
         query = (
@@ -135,15 +131,6 @@ class Actvid(WebScraper):
     def rabbit_id(self, url: str) -> tuple:
         parts = p.urlparse(url, allow_fragments=True, scheme="/").path.split("/")
         return re.findall(r'(https:\/\/.*\/embed-4)', url)[0].replace("embed-4", "ajax/embed-4/"), parts[-1]
-
-    ## decryption
-    ## Thanks to Twilight
-
-    # def determine_char_enc(self, value):
-    #    result = chardet.detect(value)['encoding']
-    #    return result
-
-    # websocket simulation
 
     def gh_key(self):
         with open(f"{windows_or_linux()}/animovkey.txt") as f:

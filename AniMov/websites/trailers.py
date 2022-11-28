@@ -83,11 +83,9 @@ class Trailers(WebScraper):
         name = t[self.title]
         season, episode = self.ask(t[self.url])
         url = self.shows_cdn_url(season, episode, t[self.url])
-        # History.addhistory(self.userinput, state, "", season)
         if state == "d":
             self.dl(url, name, season=season, episode=episode)
             return
-        # update_presence(t[self.title], season)
         print("Seeking is Disabled with Trailers")
         self.play(url, name)
 
