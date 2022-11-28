@@ -16,21 +16,23 @@ from AniMov.websites.goal import Goal9
 from AniMov.utils.onstartup import get_key
 
 
-def ani_mov():
-    calls = {
-        "theflix": [TheFlix, "https://theflix.to"],
-        "vidsrc": [VidSrc, "https://v2.vidsrc.me"],
-        "eja": [Eja, "https://eja.tv"],
-        "ask4movie": [Ask4Movie, "https://ask4movie.mx"],
-        "ustvgo": [Ustvgo, "https://ustvgo.tv"],
-        "kimcartoon": [KimCartoon, "https://kimcartoon.li"],
-        "actvid": [Actvid, "https://www.actvid.com"],
-        "sflix": [Sflix, "https://sflix.se"],
-        "solar": [Solar, "https://solarmovie.pe"],
-        "dopebox": [DopeBox, "https://dopebox.to"],
-        "9goal": [Goal9, "https://9goal.tv/"],
-    }
+DEFAULT_PROVIDER = "theflix"
+PROVIDER_OPTIONS = {
+    "theflix": TheFlix,
+    "vidsrc": VidSrc,
+    "eja": Eja,
+    "ask4movie": Ask4Movie,
+    "ustvgo": Ustvgo,
+    "kimcartoon": KimCartoon,
+    "actvid": Actvid,
+    "sflix": Sflix,
+    "solar": Solar,
+    "dopebox": DopeBox,
+    "9goal": Goal9,
+}
 
+
+def ani_mov():
     if platform.system() == "Windows":
         os.system("color FF")
 
@@ -58,14 +60,10 @@ The name of the provider """
     get_key()
 
     selected_provider = input(initial_message)
-    if selected_provider == "":
-        selected_provider = "theflix"
-    query = None
-    result = None
     try:
-        provider_data = calls.get(selected_provider, calls["theflix"])
-        provider: WebScraper = provider_data[0](provider_data[1])
-        provider.redo(query, result)
+        provider = PROVIDER_OPTIONS.get(selected_provider, PROVIDER_OPTIONS[DEFAULT_PROVIDER])
+        provider_object: WebScraper = provider()
+        provider_object.redo(None, None)
     except UnicodeDecodeError as e:
         print("The Current Provider has changed", e)
     except Exception as e:

@@ -3,8 +3,11 @@ from bs4 import BeautifulSoup as BS
 from .actvid import Actvid
 
 
+BASE_URL = "https://solarmovie.pe"
+
+
 class Solar(Actvid):
-    def __init__(self, base_url) -> None:
+    def __init__(self, base_url=BASE_URL) -> None:
         super().__init__(base_url)
         self.base_url = base_url
         self.rep_key = "6LeWLCYeAAAAAL1caYzkrIY-M59Vu41vIblXQZ48"

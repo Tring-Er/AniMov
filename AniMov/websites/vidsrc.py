@@ -9,10 +9,11 @@ from AniMov.elements.WebScraper import WebScraper
 from ..utils.keep_alive import KP
 
 sys.path.append("..")
+BASE_URL = "https://v2.vidsrc.me"
 
 
 class VidSrc(WebScraper):
-    def __init__(self, base_url):
+    def __init__(self, base_url=BASE_URL):
         super().__init__(base_url)
         self.base_url = base_url
         self.stream = "https://vidsrc.stream/pro/"

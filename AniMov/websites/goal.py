@@ -1,8 +1,11 @@
 from AniMov.elements.WebScraper import WebScraper
 
 
+BASE_URL = "https://9goal.tv/"
+
+
 class Goal9(WebScraper):
-    def __init__(self, base_url) -> None:
+    def __init__(self, base_url=BASE_URL) -> None:
         super().__init__(base_url)
         self.base_url = base_url
     

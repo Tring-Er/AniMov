@@ -8,10 +8,11 @@ from bs4 import BeautifulSoup as BS
 from AniMov.elements.WebScraper import WebScraper
 
 sys.path.append("..")
+BASE_URL = "https://theflix.to"
 
 
 class TheFlix(WebScraper):
-    def __init__(self, base_url):
+    def __init__(self, base_url=BASE_URL):
         super().__init__(base_url)
         self.base_url = base_url
         self.token = self.auth_token()
