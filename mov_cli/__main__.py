@@ -1,5 +1,3 @@
-"""This is a test"""
-
 import os
 import platform
 
@@ -17,7 +15,6 @@ from mov_cli.websites.dopebox import DopeBox
 from mov_cli.websites.sflix import Sflix
 from mov_cli.websites.solar import Solar
 from mov_cli.websites.goal import goal9
-
 from mov_cli.utils.onstartup import startup
 
 
