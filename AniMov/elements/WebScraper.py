@@ -184,5 +184,4 @@ class WebScraper:
                     self.mov_pand_dp(mov_or_tv, "p")
 
     def redo(self, search: str = None, result: int = None):
-        print(result)
         return self.display(search, result)
