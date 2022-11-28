@@ -16,27 +16,27 @@ from AniMov.websites.goal import Goal9
 from AniMov.utils.onstartup import Startup
 
 
-calls = {
-    "theflix": [TheFlix, "https://theflix.to"],
-    "vidsrc": [VidSrc, "https://v2.vidsrc.me"],
-    "eja": [Eja, "https://eja.tv"],
-    "ask4movie": [Ask4Movie, "https://ask4movie.mx"],
-    "ustvgo": [Ustvgo, "https://ustvgo.tv"],
-    "kimcartoon": [KimCartoon, "https://kimcartoon.li"],
-    "actvid": [Actvid, "https://www.actvid.com"],
-    "sflix": [Sflix, "https://sflix.se"],
-    "solar": [Solar, "https://solarmovie.pe"],
-    "dopebox": [DopeBox, "https://dopebox.to"],
-    "9goal": [Goal9, "https://9goal.tv/"],
-}
+def ani_mov():
+    calls = {
+        "theflix": [TheFlix, "https://theflix.to"],
+        "vidsrc": [VidSrc, "https://v2.vidsrc.me"],
+        "eja": [Eja, "https://eja.tv"],
+        "ask4movie": [Ask4Movie, "https://ask4movie.mx"],
+        "ustvgo": [Ustvgo, "https://ustvgo.tv"],
+        "kimcartoon": [KimCartoon, "https://kimcartoon.li"],
+        "actvid": [Actvid, "https://www.actvid.com"],
+        "sflix": [Sflix, "https://sflix.se"],
+        "solar": [Solar, "https://solarmovie.pe"],
+        "dopebox": [DopeBox, "https://dopebox.to"],
+        "9goal": [Goal9, "https://9goal.tv/"],
+    }
 
+    Startup.getkey()
 
-Startup.getkey()
+    if platform.system() == "Windows":
+        os.system("color FF")
 
-if platform.system() == "Windows":
-    os.system("color FF")  # Fixes colour in Windows 10 CMD terminal.
-
-initial_message = f"""\n
+    initial_message = f"""\n
 Movies and Shows:
 theflix
 actvid
@@ -57,8 +57,6 @@ Sports:
 
 The name of the provider """
 
-
-def movcli():
     selected_provider = input(initial_message)
     if selected_provider == "":
         selected_provider = "theflix"
@@ -75,4 +73,4 @@ def movcli():
 
 
 if __name__ == '__main__':
-    movcli()
+    ani_mov()
