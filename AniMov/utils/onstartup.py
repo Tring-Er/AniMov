@@ -1,7 +1,7 @@
-import httpx
 import platform
-import os
-from os import environ
+from os import environ, getlogin
+
+import httpx
 
 class startup:
     def __init__(self):
@@ -13,9 +13,9 @@ class startup:
         if plt == "Windows":
             return f'{environ["USERPROFILE"]}'
         elif plt == "Linux":
-            return f"/home/{os.getlogin()}"
+            return f"/home/{getlogin()}"
         elif plt == "Darwin":
-            return f"/Users/{os.getlogin()}"
+            return f"/Users/{getlogin()}"
     
     @staticmethod
     def getkey():
