@@ -31,7 +31,7 @@
 <br />
 <div align="center">
 
-  <a href="https://github.com/mov-cli/mov-cli">
+  <a href="https://github.com/tring-er/animov">
     <img src="https://user-images.githubusercontent.com/83706294/194960059-a9202d72-f033-46b4-b756-3193dc54fb20.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -41,9 +41,9 @@
     <br />
     <a href="#about-the-project">View Demo</a>
     ·
-    <a href="https://github.com/mov-cli/mov-cli/issues">Report Bug</a>
+    <a href="https://github.com/tring-er/animov/issues">Report Bug</a>
     ·
-    <a href="https://github.com/mov-cli/mov-cli/issues">Request Feature</a>
+    <a href="https://github.com/tring-er/animov/issues">Request Feature</a>
   </p>
 </div>
 
@@ -82,7 +82,7 @@ mov-cli is an Commandline Tool to watch and download shows, movies.
 
 Shows and Movies are scraped from Streaming Sites.
 
-mov-cli currently 10 Providers:
+animov currently 10 Providers:
 
 TheFlix · Vidsrc · Eja · ustvgo · Ask4Movie · KimCartoon · Actvid · SFlix · Solar · DopeBox 
 
@@ -104,14 +104,7 @@ USTVGO: US IP Only or US VPN
 ### Installation
 Choose from Python or Shell
 
-Python:
-```
-pip install mov-cli
-```
-Shell:
-```
-sudo curl -s "https://github.com/mov-cli/mov-cli/raw/v3/mov-cli" -L -o /usr/local/bin/mov-cli && sudo chmod +x /usr/local/bin/mov-cli
-```
+//
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -120,7 +113,7 @@ sudo curl -s "https://github.com/mov-cli/mov-cli/raw/v3/mov-cli" -L -o /usr/loca
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Type: ```mov-cli``` in to your Commandline.
+Type: ```//``` in to your Commandline.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -129,7 +122,7 @@ Type: ```mov-cli``` in to your Commandline.
 ## Roadmap
 We do not have an clear Roadmap.
 
-If you want an Features, create a [issue](https://github.com/mov-cli/mov-cli/issues/new) or create an Feature and make an Pull Request.
+If you want an Features, create a [issue](https://github.com/tring-er/animov/issues/new) or create an Feature and make an Pull Request.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
@@ -146,8 +139,8 @@ Pull requests are welcome and _appreciated_. For major changes, please open an i
 
 Contributors:
 
-<a href = "https://github.com/mov-cli/mov-cli/graphs/contributors">
-  <img src = "https://contrib.rocks/image?repo=mov-cli/mov-cli"/>
+<a href = "https://github.com/tring-er/animov/graphs/contributors">
+  <img src = "https://contrib.rocks/image?repo=tring-er/animov/>
 </a>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -186,13 +179,13 @@ Heavily inspired from [ani-cli](https://github.com/pystardust/ani-cli)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/mov-cli/mov-cli.svg?style=for-the-badge
-[contributors-url]: https://github.com/mov-cli/mov-cli/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/mov-cli/mov-cli.svg?style=for-the-badge
-[forks-url]: https://github.com/mov-cli/mov-cli/network/members
-[stars-shield]: https://img.shields.io/github/stars/mov-cli/mov-cli.svg?style=for-the-badge
-[stars-url]: https://github.com/mov-cli/mov-cli/stargazers
-[issues-shield]: https://img.shields.io/github/issues/mov-cli/mov-cli.svg?style=for-the-badge
-[issues-url]: https://github.com/mov-cli/mov-cli/issues
-[license-shield]: https://img.shields.io/github/license/mov-cli/mov-cli.svg?style=for-the-badge
-[license-url]: https://github.com/mov-cli/mov-cli/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/tring-er/animov.svg?style=for-the-badge
+[contributors-url]: https://github.com/tring-er/animov/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/tring-er/animov.svg?style=for-the-badge
+[forks-url]: https://github.com/tring-er/animov/network/members
+[stars-shield]: https://img.shields.io/github/stars/tring-er/animov.svg?style=for-the-badge
+[stars-url]: https://github.com/tring-er/animov/stargazers
+[issues-shield]: https://img.shields.io/github/issues/tring-er/animov.svg?style=for-the-badge
+[issues-url]: https://github.com/tring-er/animov/issues
+[license-shield]: https://img.shields.io/github/license/tring-er/animov.svg?style=for-the-badge
+[license-url]: https://github.com/tring-er/animov/blob/master/LICENSE.txt
