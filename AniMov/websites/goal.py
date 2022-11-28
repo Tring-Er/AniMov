@@ -27,7 +27,7 @@ class Goal9(WebScraper):
             print("You can't Showdownload Football Match!?") # IF you call it soccer you clearly have made something wrong in life
             return
         if state == "d":
-            self.dl(m[self.url], m[self.title])
+            self.download(m[self.url], m[self.title])
             return
         self.play(m[self.url], m[self.title])
         

@@ -14,7 +14,7 @@ class Ask4Movie(WebScraper):
     
     def search(self, q: str = None):
         q = (
-            input(self.blue("[!] Please Enter the name of the Movie: "))
+            input("[!] Please Enter the name of the Movie: ")
             if q is None
             else q
         )
@@ -55,9 +55,7 @@ class Ask4Movie(WebScraper):
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})
         episode = int(input(
-            self.lmagenta(
                 f"Please input the episode number(total episodes in season:{season}):{len(episodes)}: "
-            )
         ))
         url = episodes[episode - 1]["data-url"].split("/")[2]
         return url, season, episode
@@ -67,9 +65,7 @@ class Ask4Movie(WebScraper):
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "item"})
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{len(seasons)}): "
-            )
         )
         season = seasons[len(seasons) - int(season)]
         season_link = season.find("a")["href"]
@@ -80,9 +76,7 @@ class Ask4Movie(WebScraper):
         episodes = soup.findAll("span", {"class": "episode"})
         episode = int(
             input(
-                self.lmagenta(
                     f"Please input the episode number(total episodes in season:{season}):{len(episodes)}: "
-                )
             )
         )
         url = episodes[episode - 1]["data-url"].split("/")[2]
@@ -109,7 +103,7 @@ class Ask4Movie(WebScraper):
         for e in range(len(episodes)):
             url = episodes[e]["data-url"].split("/")[2]
             url = self.cdn_url(url)
-            self.dl(url, t[self.title], episode=e+1, season=season)
+            self.download(url, t[self.title], episode=e + 1, season=season)
 
     def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
@@ -127,7 +121,7 @@ class Ask4Movie(WebScraper):
         name = t[self.title]
         url = self.cdn_url(url)
         if state == "d":
-            self.dl(url, name, episode=episode, season=season)
+            self.download(url, name, episode=episode, season=season)
             return
         self.play(url, name)
 
@@ -136,7 +130,7 @@ class Ask4Movie(WebScraper):
         url = self.movie(m[self.url])
         url = self.cdn_url(url)
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")

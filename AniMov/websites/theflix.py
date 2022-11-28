@@ -31,14 +31,14 @@ class TheFlix(WebScraper):
         ).headers["Set-Cookie"]
 
     def search(self, query: str = None) -> list:
-        print(self.red("[s] Search"))
-        print(self.red("[ts] Trending TV Shows"))
-        print(self.red("[tm] Trending Movies"))
-        print(self.red("[q] Quit"))
-        choice = input(self.blue("Enter your choice: ")).lower()
+        print("[s] Search")
+        print("[ts] Trending TV Shows")
+        print("[tm] Trending Movies")
+        print("[q] Quit")
+        choice = input("Enter your choice: ").lower()
         if choice == "s":
             q = (
-                input(self.blue("[!] Please Enter the name of the Movie: "))
+                input("[!] Please Enter the name of the Movie: ")
                 if query is None
                 else query
             )
@@ -50,8 +50,8 @@ class TheFlix(WebScraper):
                         self.client.get(f"https://theflix.to/tv-shows/trending?search={q}"),
                         "lxml",
                     )
-                    .select("#__NEXT_DATA__")[0]
-                    .text
+                            .select("#__NEXT_DATA__")[0]
+                            .text
                 )["props"]["pageProps"]["mainList"]["docs"]
                 if i["available"]
             ]:
@@ -65,14 +65,14 @@ class TheFlix(WebScraper):
                         ),
                         "lxml",
                     )
-                    .select("#__NEXT_DATA__")[0]
-                    .text
+                            .select("#__NEXT_DATA__")[0]
+                            .text
                 )["props"]["pageProps"]["mainList"]["docs"]
                 if i["available"]
             ]:
                 data.append(k)
             if not len(data):
-                print(self.red("No Results found"), self.lmagenta("Bye!"))
+                print("No Results found", "Bye!")
                 sys.exit(1)
             else:
                 return data
@@ -81,7 +81,7 @@ class TheFlix(WebScraper):
         elif choice == "tm":
             return self.trending_movies()
         elif choice == "q":
-            print(self.red("Bye!"))
+            print("Bye!")
             sys.exit(1)
 
     def trending_tv_shows(self):
@@ -93,14 +93,14 @@ class TheFlix(WebScraper):
                     self.client.get(f"https://theflix.to/tv-shows/trending"),
                     "lxml",
                 )
-                .select("#__NEXT_DATA__")[0]
-                .text
+                        .select("#__NEXT_DATA__")[0]
+                        .text
             )["props"]["pageProps"]["mainList"]["docs"]
             if i["available"]
         ]:
             data.append(j)
         return data
-    
+
     def trending_movies(self):
         data = []
         for k in [
@@ -112,8 +112,8 @@ class TheFlix(WebScraper):
                     ),
                     "lxml",
                 )
-                .select("#__NEXT_DATA__")[0]
-                .text
+                        .select("#__NEXT_DATA__")[0]
+                        .text
             )["props"]["pageProps"]["mainList"]["docs"]
             if i["available"]
         ]:
@@ -160,19 +160,17 @@ class TheFlix(WebScraper):
             episode_id = f[int(season) - 1]["episodes"][int(episode) - 1]["videos"][0]
         except IndexError:
             print(
-                self.red("Episode unavailable"),
-                self.lmagenta("Bye!"),
-                self.blue(
-                    "Maybe try "
-                    "one of the "
-                    "other "
-                    "websites or "
-                    "request the "
-                    "episode to "
-                    "be added by "
-                    "contacting "
-                    "theflix"
-                ),
+                "Episode unavailable",
+                "Bye!",
+                "Maybe try "
+                "one of the "
+                "other "
+                "websites or "
+                "request the "
+                "episode to "
+                "be added by "
+                "contacting "
+                "theflix"
             )
             sys.exit()
         self.client.set_headers({"Cookie": k})
@@ -183,7 +181,7 @@ class TheFlix(WebScraper):
 
     def ask(self, ts, ids, name, token: str):
         season = input(
-            self.lmagenta(f"Please input the season number(total seasons:{ts}): ")
+            f"Please input the season number(total seasons:{ts}): "
         )
         self.client.set_headers({"cookie": token})
         episodes = json.loads(
@@ -197,9 +195,7 @@ class TheFlix(WebScraper):
             .text
         )["props"]["pageProps"]["selectedTv"]["numberOfEpisodes"]
         episode = input(
-            self.lmagenta(
                 f"Please input the episode number(total episodes in {season}:{episodes // int(ts)}: "
-            )
         )
         return season, episodes, episode
 
@@ -212,7 +208,7 @@ class TheFlix(WebScraper):
         page = self.page(m)
         url, name = self.cdn_url(page[0], name, self.token)
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         self.play(url, name)
 
@@ -225,6 +221,6 @@ class TheFlix(WebScraper):
         page, name = self.ws_page([name, t[1], season, episode])
         cdn, name = self.cdn_url_ep(page, name, self.token)
         if state == "d":
-            self.dl(cdn, name)
+            self.download(cdn, name)
             return
         self.play(cdn, name)

@@ -50,7 +50,7 @@ class Ustvgo(WebScraper):
         name = m[self.title]
         url = self.stream_link(f"{m[self.url]}")
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         self.play(url, name)
 

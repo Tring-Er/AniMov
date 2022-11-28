@@ -15,9 +15,7 @@ class DopeBox(Actvid):
             i["data-id"] for i in BS(response_series_id, "lxml").select(".dropdown-item")
         ]
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
-            )
         )
         response_episodes = self.client.get(
             f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
@@ -26,9 +24,7 @@ class DopeBox(Actvid):
         episode = episodes[
             int(
                 input(
-                    self.lmagenta(
                         f"Please input the episode number(total episodes in season:{season}):{len(episodes)} : "
-                    )
                 )
             )
             - 1

@@ -12,7 +12,7 @@ class KimCartoon(WebScraper):
 
     def search(self, q: str):
         q = (
-            input(self.blue("[!] Please Enter the name of the Movie: "))
+            input("[!] Please Enter the name of the Movie: ")
             if q is None
             else q
         )
@@ -36,9 +36,7 @@ class KimCartoon(WebScraper):
         episodes = table.findAll("a", {"rel": "noreferrer noopener"})
         episode = int(
             input(
-                self.lmagenta(
                     f"Please input the episode number:{len(episodes)}: "
-                )
             )
         )
         url = episodes[len(episodes) - episode]["href"]
@@ -53,7 +51,7 @@ class KimCartoon(WebScraper):
             epi = e + 1
             link = episodes[len(episodes) - epi]["href"]
             url = self.cdn_url(link)
-            self.dl(url, t[self.title], episode=e + 1)
+            self.download(url, t[self.title], episode=e + 1)
     
     def cdn_url(self, url):
         response = self.client.get(self.base_url + url).text
@@ -76,7 +74,7 @@ class KimCartoon(WebScraper):
         link, episode = self.ask(t[self.url])
         url = self.cdn_url(link)
         if state == "d":
-            self.dl(url, name, season=".", episode=episode)
+            self.download(url, name, season=".", episode=episode)
             return
         self.play(url, name)
 
@@ -88,7 +86,7 @@ class KimCartoon(WebScraper):
         link = self.mov_table(f"{m[self.url]}")
         url = self.cdn_url(link)
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         self.play(url, name)
 

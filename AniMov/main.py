@@ -66,8 +66,8 @@ The name of the provider """
         provider_data = calls.get(selected_provider, calls["theflix"])
         provider: WebScraper = provider_data[0](provider_data[1])
         provider.redo(query, result)
-    except UnicodeDecodeError:
-        print("The Current Provider has changed")
+    except UnicodeDecodeError as e:
+        print("The Current Provider has changed", e)
     except Exception as e:
         print("[!] An error has occurred | ", e)
 

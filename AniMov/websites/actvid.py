@@ -37,7 +37,7 @@ class Actvid(WebScraper):
 
     def search(self, query: str = None) -> str:
         query = (
-            input(self.blue("[!] Please Enter the name of the Movie: "))
+            input("[!] Please Enter the name of the Movie: ")
             if query is None
             else query
         )
@@ -68,9 +68,7 @@ class Actvid(WebScraper):
             i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
         ]
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
-            )
         )
         link_season_ids = f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
         response_season_ids = self.client.get(link_season_ids)
@@ -78,9 +76,7 @@ class Actvid(WebScraper):
         episode = episodes[
             int(
                 input(
-                    self.lmagenta(
                         f"Please input the episode number(total episodes in season:{season}):{len(episodes)} : "
-                    )
                 )
             )
             - 1
@@ -190,7 +186,7 @@ class Actvid(WebScraper):
                 iframe_url, tv_id = self.get_link(server_id)
                 iframe_link, iframe_id = self.rabbit_id(iframe_url)
                 url = self.cdn_url(iframe_link, iframe_id)
-                self.dl(url, name, season=s + 1, episode=eps + 1)
+                self.download(url, name, season=s + 1, episode=eps + 1)
 
     def tv_pand_dp(self, title: list, state: str = "d" or "p" or "sd"):
         name = title[self.title]
@@ -203,7 +199,7 @@ class Actvid(WebScraper):
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
         if state == "d":
-            self.dl(url, name, season=season, episode=ep)
+            self.download(url, name, season=season, episode=ep)
             return
         self.play(url, name)
 
@@ -214,7 +210,7 @@ class Actvid(WebScraper):
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")

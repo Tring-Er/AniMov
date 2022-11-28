@@ -13,7 +13,7 @@ class Eja(WebScraper):
 
     def search(self, q: str = None):
         q = (
-            input(self.blue("[!] Enter a Channel: "))
+            input("[!] Enter a Channel: ")
             if q is None
             else q
         )
@@ -51,7 +51,7 @@ class Eja(WebScraper):
         name = m[self.title]
         url = self.get_hls(m[self.aid])
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         self.play(url, name)
 

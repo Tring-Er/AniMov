@@ -4,10 +4,7 @@ import re
 import subprocess
 import sys
 
-from colorama import Fore, Style
 from .httpclient import HttpClient
-
-
 
 
 class WebScraper:
@@ -18,35 +15,11 @@ class WebScraper:
         pass
 
     @staticmethod
-    def blue(txt: str) -> str:
-        return f"{Fore.BLUE}{txt}{Style.RESET_ALL}"
-
-    @staticmethod
-    def yellow(txt: str) -> str:
-        return f"{Fore.YELLOW}{txt}{Style.RESET_ALL}"
-
-    @staticmethod
-    def red(txt: str) -> str:
-        return f"{Fore.RED}{txt}{Style.RESET_ALL}"
-
-    @staticmethod
-    def lmagenta(txt: str) -> str:
-        return f"{Fore.LIGHTMAGENTA_EX}{txt}{Style.RESET_ALL}"
-    
-    @staticmethod
-    def cyan(txt: str) -> str:
-        return f"{Fore.CYAN}{txt}{Style.RESET_ALL}"
-
-    @staticmethod
-    def green(txt: str) -> str:
-        return f"{Fore.GREEN}{txt}{Style.RESET_ALL}"
-
-    @staticmethod
     def parse(txt: str) -> str:
         return re.sub(r"\W+", "-", txt.lower())
 
-    def dl(
-        self, url: str, name: str, subtitle: str = None, season = None, episode = None
+    def download(
+            self, url: str, name: str, subtitle: str = None, season=None, episode=None
     ):
         name = self.parse(name)
         fixname = re.sub(r"-+", " ", name)
@@ -57,21 +30,21 @@ class WebScraper:
 
         # args = shlex.split(f 'ffmpeg -i "{url}" -c copy {self.parse(name)}.mp4')
         args = [
-        'ffmpeg',
-        '-n', 
-        '-thread_queue_size',
-        '4096',
-        '-err_detect',
-        'ignore_err',
-        '-i', 
-        f'{url}',
-        "-user_agent",
-        '"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"',
-        '-c', 
-        'copy',
-        '-preset',
-        'ultrafast',
-        f'{fixname}.mp4'
+            'ffmpeg',
+            '-n',
+            '-thread_queue_size',
+            '4096',
+            '-err_detect',
+            'ignore_err',
+            '-i',
+            f'{url}',
+            "-user_agent",
+            '"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"',
+            '-c',
+            'copy',
+            '-preset',
+            'ultrafast',
+            f'{fixname}.mp4'
         ]
 
         if subtitle:
@@ -81,7 +54,7 @@ class WebScraper:
             )
         ffmpeg_process = subprocess.Popen(args)
         ffmpeg_process.wait()
-        
+
         return print(f"Downloaded at {os.getcwd()}")
 
     def play(self, url: str, name: str):
@@ -112,7 +85,7 @@ class WebScraper:
                 )
                 vlc_process.wait()
         except Exception as e:
-            txt = f"{self.red('[!]')} Could not play {name}: MPV or VLC not found | {e}"
+            txt = f"[!]Could not play {name}: MPV or VLC not found | {e}"
             logging.log(logging.ERROR, txt)
             # print(txt)  # TODO implement logging to a file
             sys.exit(1)
@@ -138,18 +111,18 @@ class WebScraper:
         import AniMov.main as movcli
         result = self.sand_r(q)
         for ix, vl in enumerate(result):
-            print(  
-                self.green(f"[{ix + 1}] {vl[self.title]} {vl[self.mv_tv]}"), end="\n\n"
+            print(
+                f"[{ix + 1}] {vl[self.title]} {vl[self.mv_tv]}", end="\n\n"
             )
-        print(self.red("[q] Exit!"), end="\n\n")
-        print(self.yellow("[s] Search Again!"), end="\n\n")
-        print(self.cyan("[d] Download!"), end="\n\n")
-        print(self.green("[p] Switch Provider!"), end="\n\n")
-        print(self.green("[sd] Download Whole Show!"), end="\n\n")
+        print("[q] Exit!", end="\n\n")
+        print("[s] Search Again!", end="\n\n")
+        print("[d] Download!", end="\n\n")
+        print("[p] Switch Provider!", end="\n\n")
+        print("[sd] Download Whole Show!", end="\n\n")
         choice = ""
         while choice not in range(len(result) + 1):
             choice = (
-                input(self.blue("Enter your choice: ")) if not result_no else result_no
+                input("Enter your choice: ") if not result_no else result_no
             )
             if choice == "q":
                 sys.exit()
@@ -162,27 +135,25 @@ class WebScraper:
                     mov_or_tv = result[
                         int(
                             input(
-                                self.yellow(
-                                    "[!] Please enter the number of the movie you want to download: "
-                                )
+                                "[!] Please enter the number of the movie you want to download: "
                             )
                         )
                         - 1
-                    ]
+                        ]
                     if mov_or_tv[self.mv_tv] == "TV":
                         self.tv_pand_dp(mov_or_tv, "d")
                     else:
                         self.mov_pand_dp(mov_or_tv, "d")
                 except ValueError as e:
                     print(
-                        self.red(f"[!]  Invalid Choice Entered! | "),
-                        self.lmagenta(str(e)),
+                        f"[!]  Invalid Choice Entered! | ",
+                        str(e),
                     )
                     sys.exit(1)
                 except IndexError as e:
                     print(
-                        self.red(f"[!]  This Episode is coming soon! | "),
-                        self.lmagenta(str(e)),
+                        f"[!]  This Episode is coming soon! | ",
+                        str(e),
                     )
                     sys.exit(2)
             elif choice == "sd":
@@ -190,27 +161,25 @@ class WebScraper:
                     mov_or_tv = result[
                         int(
                             input(
-                                self.yellow(
-                                    "[!] Please enter the number of the movie you want to download: "
-                                )
+                                "[!] Please enter the number of the movie you want to download: "
                             )
                         )
                         - 1
-                    ]
+                        ]
                     if mov_or_tv[self.mv_tv] == "TV":
                         self.tv_pand_dp(mov_or_tv, "sd")
                     else:
                         self.mov_pand_dp(mov_or_tv, "sd")
                 except ValueError as e:
                     print(
-                        self.red(f"[!]  Invalid Choice Entered! | "),
-                        self.lmagenta(str(e)),
+                        f"[!]  Invalid Choice Entered! | ",
+                        str(e),
                     )
                     sys.exit(1)
                 except IndexError as e:
                     print(
-                        self.red(f"[!]  This Episode is coming soon! | "),
-                        self.lmagenta(str(e)),
+                        f"[!]  This Episode is coming soon! | ",
+                        str(e),
                     )
                     sys.exit(2)
             else:
