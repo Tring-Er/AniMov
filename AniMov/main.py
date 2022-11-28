@@ -15,20 +15,22 @@ from AniMov.websites.solar import Solar
 from AniMov.websites.goal import Goal9
 from AniMov.utils.onstartup import get_key
 
+DEFAULT_PROVIDER = 1
+
 
 def ani_mov():
     calls = {
-        "theflix": [TheFlix, "https://theflix.to"],
-        "vidsrc": [VidSrc, "https://v2.vidsrc.me"],
-        "eja": [Eja, "https://eja.tv"],
-        "ask4movie": [Ask4Movie, "https://ask4movie.mx"],
-        "ustvgo": [Ustvgo, "https://ustvgo.tv"],
-        "kimcartoon": [KimCartoon, "https://kimcartoon.li"],
-        "actvid": [Actvid, "https://www.actvid.com"],
-        "sflix": [Sflix, "https://sflix.se"],
-        "solar": [Solar, "https://solarmovie.pe"],
-        "dopebox": [DopeBox, "https://dopebox.to"],
-        "9goal": [Goal9, "https://9goal.tv/"],
+        1: [TheFlix, "https://theflix.to"],
+        2: [VidSrc, "https://v2.vidsrc.me"],
+        3: [Eja, "https://eja.tv"],
+        4: [Ask4Movie, "https://ask4movie.mx"],
+        5: [Ustvgo, "https://ustvgo.tv"],
+        6: [KimCartoon, "https://kimcartoon.li"],
+        7: [Actvid, "https://www.actvid.com"],
+        8: [Sflix, "https://sflix.se"],
+        9: [Solar, "https://solarmovie.pe"],
+        10: [DopeBox, "https://dopebox.to"],
+        11: [Goal9, "https://9goal.tv/"],
     }
 
     if platform.system() == "Windows":
@@ -57,19 +59,25 @@ The name of the provider """
 
     get_key()
 
-    selected_provider = input(initial_message)
-    if selected_provider == "":
-        selected_provider = "theflix"
+    current_provider = DEFAULT_PROVIDER
     query = None
     result = None
-    try:
-        provider_data = calls.get(selected_provider, calls["theflix"])
-        provider: WebScraper = provider_data[0](provider_data[1])
-        provider.redo(query, result)
-    except UnicodeDecodeError as e:
-        print("The Current Provider has changed", e)
-    except Exception as e:
-        print("[!] An error has occurred | ", e)
+
+    while True:
+        try:
+            print(f"Current provider: {calls[current_provider][1]}")
+            provider_data = calls.get(current_provider, calls[current_provider])
+            provider: WebScraper = provider_data[0](provider_data[1])
+            provider.redo(query, result)
+            break
+        except UnicodeDecodeError as e:
+            print("The Current Provider has changed", e)
+        except Exception as e:
+            print("[!] An error has occurred | ", e)
+            user_choice = input("Switch to another provider? (y or n): ")
+            if user_choice == "n":
+                return
+            current_provider += 1
 
 
 if __name__ == '__main__':
