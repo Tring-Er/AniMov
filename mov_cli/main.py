@@ -1,11 +1,9 @@
 import os
 import platform
 
-import click
-
 from mov_cli.utils.scraper import WebScraper
-from mov_cli.websites.theflix import TheFlix
-from mov_cli.websites.vidsrc import VidSrc
+from mov_cli.websites.theflix import Theflix
+from mov_cli.websites.vidsrc import Vidsrc
 from mov_cli.websites.eja import eja
 from mov_cli.websites.ask4movie import Ask4Movie
 from mov_cli.websites.ustvgo import ustvgo
@@ -19,8 +17,8 @@ from mov_cli.utils.onstartup import startup
 
 
 calls = {
-    "theflix": [TheFlix, "https://theflix.to"],
-    "vidsrc": [VidSrc, "https://v2.vidsrc.me"],
+    "theflix": [Theflix, "https://theflix.to"],
+    "vidsrc": [Vidsrc, "https://v2.vidsrc.me"],
     "eja": [eja, "https://eja.tv"],
     "ask4movie": [Ask4Movie, "https://ask4movie.mx"],
     "ustvgo": [ustvgo, "https://ustvgo.tv"],
@@ -38,12 +36,7 @@ startup.getkey()
 if platform.system() == "Windows":
     os.system("color FF")  # Fixes colour in Windows 10 CMD terminal.
 
-
-@click.command()
-@click.option(
-    "-p",
-    "--provider",
-    prompt=f"""\n
+initial_message = f"""\n
 Movies and Shows:
 theflix
 actvid
@@ -62,24 +55,19 @@ kimcartoon
 Sports:
 9goal / Football
 
-The name of the provider""",
-    help='The name of the provider ex: "theflix"',
-    default=f"theflix",
-)
-@click.option("-q", "--query", default=None, help="Your search query")
-@click.option(
-    "-r",
-    "--result",
-    default=None,
-    help="The Result Number you want to be played",
-    type=int,
-)
-def mov_cli(provider, query, result):  # TODO add regex
+The name of the provider """
+
+
+def movcli():
+    selected_provider = input(initial_message)
+    if selected_provider == "":
+        selected_provider = "theflix"
+    query = None
+    result = None
     try:
-        provider_data = calls.get(provider, calls["theflix"])
+        provider_data = calls.get(selected_provider, calls["theflix"])
         provider: WebScraper = provider_data[0](provider_data[1])
-        # provider.redo(query) if query is not None else provider.redo()
-        provider.redo(query, result)  # if result else provider.redo(query)
+        provider.redo(query, result)
     except UnicodeDecodeError:
         print("The Current Provider has changed")
     except Exception as e:
@@ -87,4 +75,4 @@ def mov_cli(provider, query, result):  # TODO add regex
 
 
 if __name__ == '__main__':
-    mov_cli()
+    movcli()

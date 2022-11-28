@@ -1,6 +1,6 @@
 #+TITLE:Disclaimer
 
-* This project: mov-cli
+* This project: AniMov
 
 
 The core aim of this project is to co-relate automation and efficiency to extract what is provided to an user on the internet. Every content available in the project is hosted by external non-affiliated sources. 
@@ -23,7 +23,7 @@ Think of this project as your normal browser, but a bit more straight-forward an
 
 
 
-* DMCA and Copyright Infrigements
+* DMCA and Copyright Infringements
 
 
 
@@ -31,7 +31,7 @@ Think of this project as your normal browser, but a bit more straight-forward an
 *A browser is a tool, and the maliciousness of the tool is directly based on the user.*
 
 
-This project uses client-side content access mechanisms. Hence, the copyright infrigements or DMCA in this project's regards are to be forwarded to the associated site by the associated notifier of any such claims. This is one of the main reasons the sites are listed in this project.
+This project uses client-side content access mechanisms. Hence, the copyright infringements or DMCA in this project's regards are to be forwarded to the associated site by the associated notifier of any such claims. This is one of the main reasons the sites are listed in this project.
 
 *Do not harass the developer. Any personal information about the developer is intentionally not made public. Exploiting such information without consent in regards to this topic will lead to legal actions by the developer themselves.*
 
@@ -39,6 +39,6 @@ This project uses client-side content access mechanisms. Hence, the copyright in
 * Contacting the developer
 
 
-Begin by making a GitHub issue or sending an email to mov-cli@protonmail.com.
+Begin by making a GitHub issue.
 
 
