@@ -111,7 +111,6 @@ class Ask4Movie(WebScraper):
                 print("Do a Direct Selection on what Season you want to download.")
                 return
             else:
-                # TODO: check wtf is that
                 url, season, episode = self.direct_show_download(t)
                 return
         if t[self.url].__contains__("channel"):
@@ -139,6 +138,3 @@ class Ask4Movie(WebScraper):
 
     def sand_r(self, q: str = None):
         return self.results(self.search(q))
-
-
-

@@ -1,9 +1,9 @@
 import sys
 
-sys.path.append("..")
-
 from ..utils.scraper import WebScraper
 from ..utils.dbs import *
+
+sys.path.append("..")
 
 
 class OlgPly(WebScraper):
@@ -18,8 +18,6 @@ class OlgPly(WebScraper):
             else q
         )
         return get_tmdb_id(q)
-
-    # !returns title, url , id, mv_tv
 
     def cdn_url(self, name):
         imdb_id = get_imdb_id(name)
@@ -126,8 +124,3 @@ class OlgPly(WebScraper):
             return self.display(self.search())
         else:
             return self.display(self.search(query))
-
-# f = OlgPly()
-# OlgPly.cdnurl(OlgPly.search()[0][2])
-
-## Has not been edited since olgply is down

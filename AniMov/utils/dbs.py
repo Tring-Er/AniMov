@@ -19,7 +19,6 @@ def get_tmdb_id(query: str) -> list:
     tmdb_id = [re.sub(r"\D+", "", i) for i in url]
     mv_tv = ["MOVIE" if i.__contains__("movie") else "TV" for i in url]
     return [list(i) for i in zip(titles, url, tmdb_id, mv_tv)]
-    # TODO title, url , id, mv_tv
 
 
 def get_imdb_id(query: str) -> str:

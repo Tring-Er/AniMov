@@ -8,7 +8,6 @@ class KP:
         self.client = HttpClient()
         self.time = time
         self.website = website
-        # self.cr_th()
 
     def ping(self, website: str = None, headers: dict = None):
         if not website:
@@ -18,4 +17,3 @@ class KP:
             x = self.client.get(website)
             print(x.text)
             time.sleep(self.time)
-
