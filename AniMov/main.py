@@ -13,7 +13,7 @@ from AniMov.websites.dopebox import DopeBox
 from AniMov.websites.sflix import Sflix
 from AniMov.websites.solar import Solar
 from AniMov.websites.goal import Goal9
-from AniMov.utils.onstartup import startup
+from AniMov.utils.onstartup import Startup
 
 
 calls = {
@@ -31,7 +31,7 @@ calls = {
 }
 
 
-startup.getkey()
+Startup.getkey()
 
 if platform.system() == "Windows":
     os.system("color FF")  # Fixes colour in Windows 10 CMD terminal.

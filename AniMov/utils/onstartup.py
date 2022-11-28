@@ -3,9 +3,8 @@ from os import environ, getlogin
 
 import httpx
 
-class startup:
-    def __init__(self):
-        pass
+
+class Startup:
 
     @staticmethod
     def winorlinux():
@@ -28,6 +27,6 @@ class startup:
         else:
             decryptkey = "https://raw.githubusercontent.com/consumet/rapidclown/rabbitstream/key.txt"
         u = httpx.get(decryptkey).text
-        with open(f"{startup.winorlinux()}/movclikey.txt", "w") as f:
+        with open(f"{Startup.winorlinux()}/movclikey.txt", "w") as f:
             f.write(u)
             
