@@ -3,10 +3,10 @@ import threading
 import sys
 import re
 
-from ..utils.scraper import WebScraper
-from ..utils.keep_alive import KP
-
 from bs4 import BeautifulSoup as BS
+
+from AniMov.elements.WebScraper import WebScraper
+from ..utils.keep_alive import KP
 
 sys.path.append("..")
 

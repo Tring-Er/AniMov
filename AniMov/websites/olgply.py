@@ -1,6 +1,6 @@
 import sys
 
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
 from ..utils.dbs import *
 
 sys.path.append("..")
