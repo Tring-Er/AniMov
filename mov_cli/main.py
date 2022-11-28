@@ -58,7 +58,7 @@ Sports:
 The name of the provider """
 
 
-def movcli():  # TODO add regex
+def movcli():
     selected_provider = input(initial_message)
     if selected_provider == "":
         selected_provider = "theflix"
@@ -67,8 +67,7 @@ def movcli():  # TODO add regex
     try:
         provider_data = calls.get(selected_provider, calls["theflix"])
         provider: WebScraper = provider_data[0](provider_data[1])
-        # provider.redo(query) if query is not None else provider.redo()
-        provider.redo(query, result)  # if result else provider.redo(query)
+        provider.redo(query, result)
     except UnicodeDecodeError:
         print("The Current Provider has changed")
     except Exception as e:
