@@ -1,3 +1,13 @@
+import logging
+import os
+import re
+import subprocess
+import sys
+
+
+from AniMov.utils.httpclient import HttpClient
+
+
 class WebScraper:
 
     def __init__(self, base_url: str) -> None:
