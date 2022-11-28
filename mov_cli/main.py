@@ -1,8 +1,6 @@
 import os
 import platform
 
-import click
-
 from mov_cli.utils.scraper import WebScraper
 from mov_cli.websites.theflix import Theflix
 from mov_cli.websites.vidsrc import Vidsrc
@@ -38,12 +36,7 @@ startup.getkey()
 if platform.system() == "Windows":
     os.system("color FF")  # Fixes colour in Windows 10 CMD terminal.
 
-
-@click.command()
-@click.option(
-    "-p",
-    "--provider",
-    prompt=f"""\n
+initial_message = f"""\n
 Movies and Shows:
 theflix
 actvid
@@ -62,21 +55,17 @@ kimcartoon
 Sports:
 9goal / Football
 
-The name of the provider""",
-    help='The name of the provider ex: "theflix"',
-    default=f"theflix",
-)
-@click.option("-q", "--query", default=None, help="Your search query")
-@click.option(
-    "-r",
-    "--result",
-    default=None,
-    help="The Result Number you want to be played",
-    type=int,
-)
-def movcli(provider, query, result):  # TODO add regex
+The name of the provider """
+
+
+def movcli():  # TODO add regex
+    selected_provider = input(initial_message)
+    if selected_provider == "":
+        selected_provider = "theflix"
+    query = None
+    result = None
     try:
-        provider_data = calls.get(provider, calls["theflix"])
+        provider_data = calls.get(selected_provider, calls["theflix"])
         provider: WebScraper = provider_data[0](provider_data[1])
         # provider.redo(query) if query is not None else provider.redo()
         provider.redo(query, result)  # if result else provider.redo(query)
