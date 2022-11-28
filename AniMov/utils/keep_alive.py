@@ -14,6 +14,6 @@ class KP:
             website = self.website
         while True:
             self.client.set_headers(headers)
-            x = self.client.get(website)
-            print(x.text)
+            response = self.client.get(website)
+            print(response.text)
             time.sleep(self.time)

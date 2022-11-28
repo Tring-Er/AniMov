@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup as BS
 
 from AniMov.utils.scraper import WebScraper
 
-
 sys.path.append("..")
 
 
@@ -197,7 +196,7 @@ class TheFlix(WebScraper):
             .text
         )["props"]["pageProps"]["selectedTv"]["numberOfEpisodes"]
         episode = input(
-                f"Please input the episode number(total episodes in {season}:{episodes // int(ts)}: "
+            f"Please input the episode number(total episodes in {season}:{episodes // int(ts)}: "
         )
         return season, episodes, episode
 
