@@ -1,6 +1,4 @@
-import logging
-import os
-import re
+from os import getcwd
 import subprocess
 import sys
 
@@ -18,13 +16,13 @@ class WebScraper:
 
     @staticmethod
     def parse(txt: str) -> str:
-        return re.sub(r"\W+", "-", txt.lower())
+        return txt.lower().replace(" ", "-")
 
     def download(
             self, url: str, name: str, subtitle: str = None, season=None, episode=None
     ):
         name = self.parse(name)
-        fixname = re.sub(r"-+", " ", name)
+        fixname = name.replace("-", " ")
         if season or episode is None:
             pass
         else:
@@ -55,7 +53,7 @@ class WebScraper:
         ffmpeg_process = subprocess.Popen(args)
         ffmpeg_process.wait()
 
-        return print(f"Downloaded at {os.getcwd()}")
+        return print(f"Downloaded at {getcwd()}")
 
     def play(self, url: str, name: str):
         try:
@@ -86,7 +84,6 @@ class WebScraper:
                 vlc_process.wait()
         except Exception as e:
             txt = f"[!]Could not play {name}: MPV or VLC not found | {e}"
-            logging.log(logging.ERROR, txt)
             sys.exit(1)
 
     def search(self, q: str = None) -> str:
