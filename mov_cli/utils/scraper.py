@@ -125,18 +125,18 @@ class WebScraper:
         pass
         # return NotImplementedError()
 
-    def TV_PandDP(self, t: list, state: str = "d" or "p"):
+    def tv_pand_dp(self, t: list, state: str = "d" or "p"):
         pass
 
-    def MOV_PandDP(self, m: list, state: str = "d" or "p"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p"):
         pass
 
-    def SandR(self, q: str = None):
+    def sandr(self, q: str = None):
         return self.results(self.search(q))
 
     def display(self, q: str = None, result_no: int = None):
         import mov_cli.__main__ as movcli
-        result = self.SandR(q)
+        result = self.sandr(q)
         for ix, vl in enumerate(result):
             print(  
                 self.green(f"[{ix + 1}] {vl[self.title]} {vl[self.mv_tv]}"), end="\n\n"
@@ -170,9 +170,9 @@ class WebScraper:
                         - 1
                     ]
                     if mov_or_tv[self.mv_tv] == "TV":
-                        self.TV_PandDP(mov_or_tv, "d")
+                        self.tv_pand_dp(mov_or_tv, "d")
                     else:
-                        self.MOV_PandDP(mov_or_tv, "d")
+                        self.mov_pand_dp(mov_or_tv, "d")
                 except ValueError as e:
                     print(
                         self.red(f"[!]  Invalid Choice Entered! | "),
@@ -198,9 +198,9 @@ class WebScraper:
                         - 1
                     ]
                     if mov_or_tv[self.mv_tv] == "TV":
-                        self.TV_PandDP(mov_or_tv, "sd")
+                        self.tv_pand_dp(mov_or_tv, "sd")
                     else:
-                        self.MOV_PandDP(mov_or_tv, "sd")
+                        self.mov_pand_dp(mov_or_tv, "sd")
                 except ValueError as e:
                     print(
                         self.red(f"[!]  Invalid Choice Entered! | "),
@@ -216,9 +216,9 @@ class WebScraper:
             else:
                 mov_or_tv = result[int(choice) - 1]
                 if mov_or_tv[self.mv_tv] == "TV":
-                    self.TV_PandDP(mov_or_tv, "p")
+                    self.tv_pand_dp(mov_or_tv, "p")
                 else:
-                    self.MOV_PandDP(mov_or_tv, "p")
+                    self.mov_pand_dp(mov_or_tv, "p")
 
     def redo(self, search: str = None, result: int = None):
         print(result)

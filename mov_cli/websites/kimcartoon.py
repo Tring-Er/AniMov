@@ -64,7 +64,7 @@ class kimcartoon(WebScraper):
         table = soup.find("table", {"class": "listing"})
         url = table.findAll("a", {"rel": "noreferrer noopener"})[0]["href"]
         return url
-    def TV_PandDP(self, t: list, state: str = "d" or "p" or "sd"):
+    def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             self.download(t)
             return
@@ -76,7 +76,7 @@ class kimcartoon(WebScraper):
             return
         self.play(url, name)
 
-    def MOV_PandDP(self, m: list, state: str = "d" or "p" or "sd"):
+    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             print("Only Shows can be downloaded with sd")
             return
