@@ -105,7 +105,7 @@ class WebScraper:
         return self.results(self.search(q))
 
     def display(self, q: str = None, result_no: int = None):
-        import AniMov.main as movcli
+        import AniMov.main as ani_mov
         result = self.sand_r(q)
         for ix, vl in enumerate(result):
             print(
@@ -126,7 +126,7 @@ class WebScraper:
             elif choice == "s":
                 return self.redo()
             elif choice == "p":
-                return movcli.mov_cli()
+                return ani_mov.ani_mov()
             elif choice == "d":
                 try:
                     mov_or_tv = result[
