@@ -18,15 +18,16 @@ class Startup:
     
     @staticmethod
     def getkey():
-        dokicloud = httpx.get("https://api.github.com/repos/consumet/rapidclown/commits/dokicloud").json()
-        rabbitstream = httpx.get("https://api.github.com/repos/consumet/rapidclown/commits/rabbitstream").json()
-        dokidate = dokicloud["commit"]["author"]["date"]
-        rabbitdate = rabbitstream["commit"]["author"]["date"]
-        if dokidate > rabbitdate:
-            decryptkey = "https://raw.githubusercontent.com/consumet/rapidclown/dokicloud/key.txt"
+        dokicloud_github_link = "https://api.github.com/repos/consumet/rapidclown/commits/dokicloud"
+        rabbitstream_github_link = "https://api.github.com/repos/consumet/rapidclown/commits/rabbitstream"
+        dokicloud_github_json = httpx.get(dokicloud_github_link).json()
+        rabbitstream_github_json = httpx.get(rabbitstream_github_link).json()
+        dokicloud_commit_date = dokicloud_github_json["commit"]["author"]["date"]
+        rabbitstream_commit_date = rabbitstream_github_json["commit"]["author"]["date"]
+        if dokicloud_commit_date > rabbitstream_commit_date:
+            decryptkey_link = "https://raw.githubusercontent.com/consumet/rapidclown/dokicloud/key.txt"
         else:
-            decryptkey = "https://raw.githubusercontent.com/consumet/rapidclown/rabbitstream/key.txt"
-        u = httpx.get(decryptkey).text
-        with open(f"{Startup.winorlinux()}/movclikey.txt", "w") as f:
-            f.write(u)
-            
+            decryptkey_link = "https://raw.githubusercontent.com/consumet/rapidclown/rabbitstream/key.txt"
+        decryptkey = httpx.get(decryptkey_link).text
+        with open(f"{Startup.winorlinux()}/animovkey.txt", "w") as f:
+            f.write(decryptkey)
