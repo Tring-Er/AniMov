@@ -13,7 +13,7 @@ from AniMov.websites.dopebox import DopeBox
 from AniMov.websites.sflix import Sflix
 from AniMov.websites.solar import Solar
 from AniMov.websites.goal import Goal9
-from AniMov.utils.onstartup import Startup
+from AniMov.utils.onstartup import get_key
 
 
 def ani_mov():
@@ -31,12 +31,10 @@ def ani_mov():
         "9goal": [Goal9, "https://9goal.tv/"],
     }
 
-    Startup.getkey()
-
     if platform.system() == "Windows":
         os.system("color FF")
 
-    initial_message = f"""\n
+    initial_message = """
 Movies and Shows:
 theflix
 actvid
@@ -56,6 +54,8 @@ Sports:
 9goal / Football
 
 The name of the provider """
+
+    get_key()
 
     selected_provider = input(initial_message)
     if selected_provider == "":

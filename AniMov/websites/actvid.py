@@ -10,7 +10,7 @@ from urllib import parse as p
 from bs4 import BeautifulSoup as BS
 
 from ..utils.scraper import WebScraper
-from ..utils.onstartup import Startup
+from ..utils.onstartup import windows_or_linux
 
 sys.path.append("..")
 
@@ -146,7 +146,7 @@ class Actvid(WebScraper):
     # websocket simulation
 
     def gh_key(self):
-        with open(f"{Startup.winorlinux()}/animovkey.txt") as f:
+        with open(f"{windows_or_linux()}/animovkey.txt") as f:
             u = f.read()
         return bytes(u, 'utf-8')
 
