@@ -1,6 +1,6 @@
 from os import getcwd
-import subprocess
-import sys
+from subprocess import Popen
+from sys import exit
 
 
 from AniMov.utils.httpclient import HttpClient
@@ -50,7 +50,7 @@ class WebScraper:
             args.extend(
                 ["-vf", f"subtitle={subtitle}", f"{fixname}.mp4"]
             )
-        ffmpeg_process = subprocess.Popen(args)
+        ffmpeg_process = Popen(args)
         ffmpeg_process.wait()
 
         return print(f"Downloaded at {getcwd()}")
@@ -66,7 +66,7 @@ class WebScraper:
                     "--no-terminal",
                 ]
 
-                mpv_process = subprocess.Popen(
+                mpv_process = Popen(
                     args
                 )
                 mpv_process.wait()
@@ -78,13 +78,13 @@ class WebScraper:
                     f"--meta-title=mov-cli{name}",
                     "--no-terminal",
                 ]
-                vlc_process = subprocess.Popen(
+                vlc_process = Popen(
                     args
                 )
                 vlc_process.wait()
         except Exception as e:
             txt = f"[!]Could not play {name}: MPV or VLC not found | {e}"
-            sys.exit(1)
+            exit(1)
 
     def search(self, q: str = None) -> str:
         pass
@@ -119,7 +119,7 @@ class WebScraper:
                 input("Enter your choice: ") if not result_no else result_no
             )
             if choice == "q":
-                sys.exit()
+                exit(1)
             elif choice == "s":
                 return self.redo()
             elif choice == "p":
@@ -143,13 +143,13 @@ class WebScraper:
                         f"[!]  Invalid Choice Entered! | ",
                         str(e),
                     )
-                    sys.exit(1)
+                    exit(1)
                 except IndexError as e:
                     print(
                         f"[!]  This Episode is coming soon! | ",
                         str(e),
                     )
-                    sys.exit(2)
+                    exit(1)
             elif choice == "sd":
                 try:
                     mov_or_tv = result[
@@ -169,13 +169,13 @@ class WebScraper:
                         f"[!]  Invalid Choice Entered! | ",
                         str(e),
                     )
-                    sys.exit(1)
+                    exit(1)
                 except IndexError as e:
                     print(
                         f"[!]  This Episode is coming soon! | ",
                         str(e),
                     )
-                    sys.exit(2)
+                    exit(1)
             else:
                 mov_or_tv = result[int(choice) - 1]
                 if mov_or_tv[self.mv_tv] == "TV":
