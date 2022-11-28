@@ -12,7 +12,6 @@ class WebScraper:
         self.client = HttpClient()
         self.base_url = base_url
         self.title, self.url, self.aid, self.mv_tv = 0, 1, 2, 3
-        pass
 
     @staticmethod
     def parse(txt: str) -> str:
@@ -83,7 +82,7 @@ class WebScraper:
                 )
                 vlc_process.wait()
         except Exception as e:
-            txt = f"[!]Could not play {name}: MPV or VLC not found | {e}"
+            print(f"[!]Could not play {name}: MPV or VLC not found | {e}")
             exit(1)
 
     def search(self, q: str = None) -> str:
@@ -102,7 +101,7 @@ class WebScraper:
         return self.results(self.search(q))
 
     def display(self, q: str = None, result_no: int = None):
-        import AniMov.main as movcli
+        import AniMov.main as animov
         result = self.sand_r(q)
         for ix, vl in enumerate(result):
             print(
@@ -123,7 +122,7 @@ class WebScraper:
             elif choice == "s":
                 return self.redo()
             elif choice == "p":
-                return movcli.mov_cli()
+                return animov.ani_mov()
             elif choice == "d":
                 try:
                     mov_or_tv = result[
