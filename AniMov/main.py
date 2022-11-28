@@ -1,19 +1,19 @@
 import os
 import platform
 
-from mov_cli.utils.scraper import WebScraper
-from mov_cli.websites.theflix import TheFlix
-from mov_cli.websites.vidsrc import VidSrc
-from mov_cli.websites.eja import Eja
-from mov_cli.websites.ask4movie import Ask4Movie
-from mov_cli.websites.ustvgo import Ustvgo
-from mov_cli.websites.kimcartoon import KimCartoon
-from mov_cli.websites.actvid import Actvid
-from mov_cli.websites.dopebox import DopeBox
-from mov_cli.websites.sflix import Sflix
-from mov_cli.websites.solar import Solar
-from mov_cli.websites.goal import Goal9
-from mov_cli.utils.onstartup import startup
+from AniMov.utils.scraper import WebScraper
+from AniMov.websites.theflix import TheFlix
+from AniMov.websites.vidsrc import VidSrc
+from AniMov.websites.eja import Eja
+from AniMov.websites.ask4movie import Ask4Movie
+from AniMov.websites.ustvgo import Ustvgo
+from AniMov.websites.kimcartoon import KimCartoon
+from AniMov.websites.actvid import Actvid
+from AniMov.websites.dopebox import DopeBox
+from AniMov.websites.sflix import Sflix
+from AniMov.websites.solar import Solar
+from AniMov.websites.goal import Goal9
+from AniMov.utils.onstartup import startup
 
 
 calls = {
