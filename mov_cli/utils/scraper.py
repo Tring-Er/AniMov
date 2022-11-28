@@ -135,7 +135,7 @@ class WebScraper:
         return self.results(self.search(q))
 
     def display(self, q: str = None, result_no: int = None):
-        import mov_cli.__main__ as movcli
+        import mov_cli.main as movcli
         result = self.sandr(q)
         for ix, vl in enumerate(result):
             print(  
