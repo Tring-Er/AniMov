@@ -13,7 +13,7 @@ class KimCartoon(WebScraper):
         super().__init__(base_url)
         self.base_url = base_url
 
-    def search(self, q: str):
+    def search_available_titles(self, q: str):
         q = (
             input("[!] Please Enter the name of the Movie: ")
             if q is None
@@ -46,7 +46,7 @@ class KimCartoon(WebScraper):
         return url, episode
     
     def download(self, t: list):
-        response = self.client.get(self.base_url + t[self.url])
+        response = self.client.get(self.base_url + t[self.url_index])
         soup = BS(response, "lxml")
         table = soup.find("table", {"class": "listing"})
         episodes = table.findAll("a", {"rel": "noreferrer noopener"})
@@ -54,7 +54,7 @@ class KimCartoon(WebScraper):
             epi = e + 1
             link = episodes[len(episodes) - epi]["href"]
             url = self.cdn_url(link)
-            self.download(url, t[self.title], episode=e + 1)
+            self.download(url, t[self.title_index], episode=e + 1)
     
     def cdn_url(self, url):
         response = self.client.get(self.base_url + url).text
@@ -73,8 +73,8 @@ class KimCartoon(WebScraper):
         if state == "sd":
             self.download(t)
             return
-        name = t[self.title]
-        link, episode = self.ask(t[self.url])
+        name = t[self.title_index]
+        link, episode = self.ask(t[self.url_index])
         url = self.cdn_url(link)
         if state == "d":
             self.download(url, name, season=".", episode=episode)
@@ -85,8 +85,8 @@ class KimCartoon(WebScraper):
         if state == "sd":
             print("Only Shows can be downloaded with sd")
             return
-        name = m[self.title]
-        link = self.mov_table(f"{m[self.url]}")
+        name = m[self.title_index]
+        link = self.mov_table(f"{m[self.url_index]}")
         url = self.cdn_url(link)
         if state == "d":
             self.download(url, name)

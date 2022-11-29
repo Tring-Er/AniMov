@@ -9,7 +9,7 @@ class Goal9(WebScraper):
         super().__init__(base_url)
         self.base_url = base_url
     
-    def search(self, q):
+    def search_available_titles(self, q):
         q = "q"
         return q
 
@@ -30,9 +30,9 @@ class Goal9(WebScraper):
             print("You can't Showdownload Football Match!?")
             return
         if state == "d":
-            self.download(m[self.url], m[self.title])
+            self.download(m[self.url_index], m[self.title_index])
             return
-        self.play(m[self.url], m[self.title])
+        self.play(m[self.url_index], m[self.title_index])
         
-    def sand_r(self, q: str = None):
-        return self.results(self.search(q))
+    def send_search_request(self, q: str = None):
+        return self.results(self.search_available_titles(q))

@@ -11,7 +11,7 @@ class OlgPly(WebScraper):
         super().__init__(base_url)
         self.base_url = base_url
 
-    def search(self, q: str = None) -> list:
+    def search_available_titles(self, q: str = None) -> list:
         q = (
             input("[!] Please Enter the name of the Movie: ")
             if q is None
@@ -121,6 +121,6 @@ class OlgPly(WebScraper):
 
     def redo(self, query: str = None, result: int = None):
         if query is None:
-            return self.display(self.search())
+            return self.display(self.search_available_titles())
         else:
-            return self.display(self.search(query))
+            return self.display(self.search_available_titles(query))

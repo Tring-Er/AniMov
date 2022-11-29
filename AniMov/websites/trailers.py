@@ -10,7 +10,7 @@ class Trailers(WebScraper):
         super().__init__(base_url)
         self.base_url = base_url
 
-    def search(self, q: str = None):
+    def search_available_titles(self, q: str = None):
         q = (
             input("[!] Please Enter the name of the Movie: ")
             if q is None
@@ -63,23 +63,23 @@ class Trailers(WebScraper):
         return url
 
     def show_download(self, t):
-        response = self.client.get(f"https://trailers.to{t[self.url]}").text
+        response = self.client.get(f"https://trailers.to{t[self.url_index]}").text
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "collapse"})
         for season in range(len(seasons)):
             episodes = seasons[season].findAll("article", {"class": "tour-modern"})
             for e in range(len(episodes)):
-                name = t[self.title]
-                url = self.shows_cdn_url(season + 1, e + 1, t[self.url])
+                name = t[self.title_index]
+                url = self.shows_cdn_url(season + 1, e + 1, t[self.url_index])
                 self.download(url, name, season=season + 1, episode=e + 1)
 
     def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             self.show_download(t)
             return
-        name = t[self.title]
-        season, episode = self.ask(t[self.url])
-        url = self.shows_cdn_url(season, episode, t[self.url])
+        name = t[self.title_index]
+        season, episode = self.ask(t[self.url_index])
+        url = self.shows_cdn_url(season, episode, t[self.url_index])
         if state == "d":
             self.download(url, name, season=season, episode=episode)
             return
@@ -87,8 +87,8 @@ class Trailers(WebScraper):
         self.play(url, name)
 
     def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
-        name = m[self.title]
-        url = self.mov_cdn_url(m[self.url])
+        name = m[self.title_index]
+        url = self.mov_cdn_url(m[self.url_index])
         if state == "d":
             self.download(url, name)
             return

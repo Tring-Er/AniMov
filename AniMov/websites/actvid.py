@@ -34,7 +34,7 @@ class Actvid(WebScraper):
             "https://rabbitstream.net:443"
         )
 
-    def search(self, query: str = None) -> str:
+    def search_available_titles(self, query: str = None) -> str:
         query = (
             input("[!] Please Enter the name of the Movie: ")
             if query is None
@@ -179,11 +179,11 @@ class Actvid(WebScraper):
                 self.download(url, name, season=s + 1, episode=eps + 1)
 
     def tv_pand_dp(self, title: list, state: str = "d" or "p" or "sd"):
-        name = title[self.title]
+        name = title[self.title_index]
         if state == "sd":
-            self.download(title[self.aid], name)
+            self.download(title[self.show_id_index], name)
             return
-        episode, season, ep = self.ask(title[self.aid])
+        episode, season, ep = self.ask(title[self.show_id_index])
         server_id = self.ep_server_id(episode)
         iframe_url, tv_id = self.get_link(server_id)
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
@@ -194,8 +194,8 @@ class Actvid(WebScraper):
         self.play(url, name)
 
     def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
-        name = m[self.title]
-        sid = self.server_id(m[self.aid])
+        name = m[self.title_index]
+        sid = self.server_id(m[self.show_id_index])
         iframe_url, tv_id = self.get_link(sid)
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
@@ -207,8 +207,8 @@ class Actvid(WebScraper):
             return
         self.play(url, name)
 
-    def sand_r(self, q: str = None):
-        return self.results(self.search(q))
+    def send_search_request(self, q: str = None):
+        return self.results(self.search_available_titles(q))
 
     def redo(self, query: str = None, result: int = None):
         return self.display(query)

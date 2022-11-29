@@ -14,7 +14,7 @@ class Eja(WebScraper):
         self.base_url = base_url
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:80.0) Gecko/20100101 Firefox/80.0"}
 
-    def search(self, q: str = None):
+    def search_available_titles(self, q: str = None):
         q = (
             input("[!] Enter a Channel: ")
             if q is None
@@ -51,12 +51,12 @@ class Eja(WebScraper):
         return link
 
     def mov_pand_dp(self, m: list, state: str = "d" or "p"):
-        name = m[self.title]
-        url = self.get_hls(m[self.aid])
+        name = m[self.title_index]
+        url = self.get_hls(m[self.show_id_index])
         if state == "d":
             self.download(url, name)
             return
         self.play(url, name)
 
-    def sand_r(self, q: str = None):
-        return self.results(self.search(q))
+    def send_search_request(self, q: str = None):
+        return self.results(self.search_available_titles(q))

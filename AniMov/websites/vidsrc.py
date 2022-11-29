@@ -25,7 +25,7 @@ class VidSrc(WebScraper):
                              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"}
         self.keep_alive = KP(self.stream)
 
-    def search(self, q: str = None):
+    def search_available_titles(self, q: str = None):
         q = (
             input("[!] Please Enter the name of the Movie: ")
             if q is None
@@ -109,25 +109,25 @@ class VidSrc(WebScraper):
         return
 
     def show_download(self, t: list):
-        response_seasons = self.client.get(f"https://www.imdb.com/title/{t[self.aid]}/episodes")
+        response_seasons = self.client.get(f"https://www.imdb.com/title/{t[self.show_id_index]}/episodes")
         soup = BS(response_seasons, "lxml")
         seasons = soup.find("h3", {"id": "episode_top"}).text.strip("Season")
         for i in range(int(seasons)):
-            response_episodes = self.client.get(f"https://www.imdb.com/title/{t[self.aid]}/episodes?season={i + 1}")
+            response_episodes = self.client.get(f"https://www.imdb.com/title/{t[self.show_id_index]}/episodes?season={i + 1}")
             soup = BS(response_episodes, "lxml")
             episodes = soup.findAll("div", {"class": "list_item"})
             for e in range(len(episodes)):
-                iframe = self.get_player_iframe(f"{t[self.url]}/{i + 1}-{e + 1}")
+                iframe = self.get_player_iframe(f"{t[self.url_index]}/{i + 1}-{e + 1}")
                 url, enable = self.cdn_url(iframe)
                 self.enabler(enable)
-                self.download(url, t[self.title], season=i + 1, episode=e + 1)
+                self.download(url, t[self.title_index], season=i + 1, episode=e + 1)
 
     def tv_pand_dp(self, infos: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             self.show_download(infos)
-        name = infos[self.title]
-        season, episode = self.ask(infos[self.aid])
-        iframe = self.get_player_iframe(f"{infos[self.url]}/{season}-{episode}")
+        name = infos[self.title_index]
+        season, episode = self.ask(infos[self.show_id_index])
+        iframe = self.get_player_iframe(f"{infos[self.url_index]}/{season}-{episode}")
         url, enable = self.cdn_url(iframe)
         self.enabler(enable)
         print(url)
@@ -137,8 +137,8 @@ class VidSrc(WebScraper):
         self.play(url, name)
 
     def mov_pand_dp(self, infos: list, state: str = "d" or "p" or "sd"):
-        name = infos[self.title]
-        iframe = self.get_player_iframe(f"{infos[self.url]}")
+        name = infos[self.title_index]
+        iframe = self.get_player_iframe(f"{infos[self.url_index]}")
         url, enable = self.cdn_url(iframe)
         self.enabler(enable)
         if state == "d":
@@ -149,5 +149,5 @@ class VidSrc(WebScraper):
             return
         self.play(url, name)
 
-    def sand_r(self, q: str = None):
-        return self.results(self.search(q))
+    def send_search_request(self, q: str = None):
+        return self.results(self.search_available_titles(q))

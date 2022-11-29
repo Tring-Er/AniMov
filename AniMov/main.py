@@ -31,12 +31,7 @@ PROVIDER_OPTIONS = {
     "9goal": Goal9,
 }
 
-
-def ani_mov():
-    if platform.system() == "Windows":
-        os.system("color FF")
-
-    initial_message = """
+INITIAL_MESSAGE = """
 Movies and Shows:
 theflix
 actvid
@@ -57,13 +52,18 @@ Sports:
 
 The name of the provider """
 
+
+def ani_mov():
+    if platform.system() == "Windows":
+        os.system("color FF")
+
     get_key()
 
-    selected_provider = input(initial_message)
+    selected_provider = input(INITIAL_MESSAGE)
+    provider = PROVIDER_OPTIONS.get(selected_provider, PROVIDER_OPTIONS[DEFAULT_PROVIDER])
     try:
-        provider = PROVIDER_OPTIONS.get(selected_provider, PROVIDER_OPTIONS[DEFAULT_PROVIDER])
         provider_object: WebScraper = provider()
-        provider_object.redo(None, None)
+        provider_object.redo()
     except UnicodeDecodeError as e:
         print("The Current Provider has changed", e)
     except Exception as e:
