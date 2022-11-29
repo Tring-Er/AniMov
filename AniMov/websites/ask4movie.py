@@ -4,17 +4,20 @@ import httpx
 
 from bs4 import BeautifulSoup as BS
 
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
+
+
+BASE_URL = "https://ask4movie.mx"
 
 
 class Ask4Movie(WebScraper):
-    def __init__(self, base_url):
+    def __init__(self, base_url=BASE_URL):
         super().__init__(base_url)
         self.base_url = base_url
     
     def search(self, q: str = None):
         q = (
-            input(self.blue("[!] Please Enter the name of the Movie: "))
+            input("[!] Please Enter the name of the Movie: ")
             if q is None
             else q
         )
@@ -55,9 +58,7 @@ class Ask4Movie(WebScraper):
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})
         episode = int(input(
-            self.lmagenta(
                 f"Please input the episode number(total episodes in season:{season}):{len(episodes)}: "
-            )
         ))
         url = episodes[episode - 1]["data-url"].split("/")[2]
         return url, season, episode
@@ -67,9 +68,7 @@ class Ask4Movie(WebScraper):
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "item"})
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{len(seasons)}): "
-            )
         )
         season = seasons[len(seasons) - int(season)]
         season_link = season.find("a")["href"]
@@ -80,9 +79,7 @@ class Ask4Movie(WebScraper):
         episodes = soup.findAll("span", {"class": "episode"})
         episode = int(
             input(
-                self.lmagenta(
                     f"Please input the episode number(total episodes in season:{season}):{len(episodes)}: "
-                )
             )
         )
         url = episodes[episode - 1]["data-url"].split("/")[2]
@@ -109,7 +106,7 @@ class Ask4Movie(WebScraper):
         for e in range(len(episodes)):
             url = episodes[e]["data-url"].split("/")[2]
             url = self.cdn_url(url)
-            self.dl(url, t[self.title], episode=e+1, season=season)
+            self.download(url, t[self.title], episode=e + 1, season=season)
 
     def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
@@ -117,7 +114,6 @@ class Ask4Movie(WebScraper):
                 print("Do a Direct Selection on what Season you want to download.")
                 return
             else:
-                # TODO: check wtf is that
                 url, season, episode = self.direct_show_download(t)
                 return
         if t[self.url].__contains__("channel"):
@@ -127,7 +123,7 @@ class Ask4Movie(WebScraper):
         name = t[self.title]
         url = self.cdn_url(url)
         if state == "d":
-            self.dl(url, name, episode=episode, season=season)
+            self.download(url, name, episode=episode, season=season)
             return
         self.play(url, name)
 
@@ -136,7 +132,7 @@ class Ask4Movie(WebScraper):
         url = self.movie(m[self.url])
         url = self.cdn_url(url)
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")
@@ -145,6 +141,3 @@ class Ask4Movie(WebScraper):
 
     def sand_r(self, q: str = None):
         return self.results(self.search(q))
-
-
-

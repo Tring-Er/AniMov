@@ -1,8 +1,11 @@
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
+
+
+BASE_URL = "https://9goal.tv/"
 
 
 class Goal9(WebScraper):
-    def __init__(self, base_url) -> None:
+    def __init__(self, base_url=BASE_URL) -> None:
         super().__init__(base_url)
         self.base_url = base_url
     
@@ -24,17 +27,12 @@ class Goal9(WebScraper):
 
     def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
-            print("You can't Showdownload Football Match!?") # IF you call it soccer you clearly have made something wrong in life
+            print("You can't Showdownload Football Match!?")
             return
         if state == "d":
-            self.dl(m[self.url], m[self.title])
+            self.download(m[self.url], m[self.title])
             return
         self.play(m[self.url], m[self.title])
         
     def sand_r(self, q: str = None):
         return self.results(self.search(q))
-
-
-
-
-

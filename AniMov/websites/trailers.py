@@ -2,7 +2,7 @@ import re
 
 from bs4 import BeautifulSoup as BS
 
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
 
 
 class Trailers(WebScraper):
@@ -12,7 +12,7 @@ class Trailers(WebScraper):
 
     def search(self, q: str = None):
         q = (
-            input(self.blue("[!] Please Enter the name of the Movie: "))
+            input("[!] Please Enter the name of the Movie: ")
             if q is None
             else q
         )
@@ -36,14 +36,11 @@ class Trailers(WebScraper):
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "collapse"})
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{len(seasons)}): "
-            ))
+            )
         episodes = seasons[int(season) - 1].findAll("article", {"class": "tour-modern"})
         episode = input(
-            self.lmagenta(
                 f"Please input the episode number(total episodes in season:{season}):{len(episodes)}: "
-            )
         )
         return season, episode
 
@@ -74,7 +71,7 @@ class Trailers(WebScraper):
             for e in range(len(episodes)):
                 name = t[self.title]
                 url = self.shows_cdn_url(season + 1, e + 1, t[self.url])
-                self.dl(url, name, season=season + 1, episode=e + 1)
+                self.download(url, name, season=season + 1, episode=e + 1)
 
     def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
@@ -83,11 +80,9 @@ class Trailers(WebScraper):
         name = t[self.title]
         season, episode = self.ask(t[self.url])
         url = self.shows_cdn_url(season, episode, t[self.url])
-        # History.addhistory(self.userinput, state, "", season)
         if state == "d":
-            self.dl(url, name, season=season, episode=episode)
+            self.download(url, name, season=season, episode=episode)
             return
-        # update_presence(t[self.title], season)
         print("Seeking is Disabled with Trailers")
         self.play(url, name)
 
@@ -95,7 +90,7 @@ class Trailers(WebScraper):
         name = m[self.title]
         url = self.mov_cdn_url(m[self.url])
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")

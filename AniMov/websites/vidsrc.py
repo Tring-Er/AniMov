@@ -3,16 +3,17 @@ import threading
 import sys
 import re
 
-from ..utils.scraper import WebScraper
-from ..utils.keep_alive import KP
-
 from bs4 import BeautifulSoup as BS
 
+from AniMov.elements.WebScraper import WebScraper
+from ..utils.keep_alive import KP
+
 sys.path.append("..")
+BASE_URL = "https://v2.vidsrc.me"
 
 
 class VidSrc(WebScraper):
-    def __init__(self, base_url):
+    def __init__(self, base_url=BASE_URL):
         super().__init__(base_url)
         self.base_url = base_url
         self.stream = "https://vidsrc.stream/pro/"
@@ -26,7 +27,7 @@ class VidSrc(WebScraper):
 
     def search(self, q: str = None):
         q = (
-            input(self.blue("[!] Please Enter the name of the Movie: "))
+            input("[!] Please Enter the name of the Movie: ")
             if q is None
             else q
         )
@@ -75,16 +76,13 @@ class VidSrc(WebScraper):
         soup = BS(response_season, "lxml")
         seasons = soup.find("h3", {"id": "episode_top"}).text.strip("Season")
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{seasons}): "
-            ))
+            )
         response_episodes = self.client.get(f"https://www.imdb.com/title/{imdb}/episodes?season={season}")
         soup = BS(response_episodes, "lxml")
         episodes = soup.findAll("div", {"class": "list_item"})
         episode = input(
-            self.lmagenta(
                 f"Please input the episode number(total episodes in season:{season}):{len(episodes)}: "
-            )
         )
         return season, episode
 
@@ -122,7 +120,7 @@ class VidSrc(WebScraper):
                 iframe = self.get_player_iframe(f"{t[self.url]}/{i + 1}-{e + 1}")
                 url, enable = self.cdn_url(iframe)
                 self.enabler(enable)
-                self.dl(url, t[self.title], season=i + 1, episode=e + 1)
+                self.download(url, t[self.title], season=i + 1, episode=e + 1)
 
     def tv_pand_dp(self, infos: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
@@ -134,7 +132,7 @@ class VidSrc(WebScraper):
         self.enabler(enable)
         print(url)
         if state == "d":
-            self.dl(url, name, season=season, episode=episode)
+            self.download(url, name, season=season, episode=episode)
             return
         self.play(url, name)
 
@@ -144,7 +142,7 @@ class VidSrc(WebScraper):
         url, enable = self.cdn_url(iframe)
         self.enabler(enable)
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")

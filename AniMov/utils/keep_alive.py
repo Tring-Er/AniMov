@@ -8,14 +8,12 @@ class KP:
         self.client = HttpClient()
         self.time = time
         self.website = website
-        # self.cr_th()
 
     def ping(self, website: str = None, headers: dict = None):
         if not website:
             website = self.website
         while True:
             self.client.set_headers(headers)
-            x = self.client.get(website)
-            print(x.text)
+            response = self.client.get(website)
+            print(response.text)
             time.sleep(self.time)
-

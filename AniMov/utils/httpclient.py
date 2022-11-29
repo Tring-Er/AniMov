@@ -11,6 +11,7 @@ default_header: dict = {
 
 
 class HttpClient:
+
     def __init__(self, headers: dict = None):
         if headers is None:
             headers = default_header
@@ -19,7 +20,7 @@ class HttpClient:
     def get(self, page: str) -> httpx.Response:
         print(page)
         try:
-            req = self.session.get(page)
+            response = self.session.get(page)
             self.session.headers["Referer"] = page
         except Exception as e:
             print(
@@ -27,11 +28,11 @@ class HttpClient:
                 "\n Please open an issue if this is not due due to your internet connection",
             )
             sys.exit(-1)
-        return req
+        return response
 
     def post(self, page: str, data: dict) -> httpx.Response:
         try:
-            req = self.session.post(page, data=data)
+            response = self.session.post(page, data=data)
             self.session.headers["Referer"] = page
         except Exception as e:
             print(
@@ -39,11 +40,10 @@ class HttpClient:
                 "\n Please open an issue if this is not due due to your internet connection",
             )
             sys.exit(-1)
-        return req
+        return response
 
     def set_headers(self, header: dict) -> None:
         self.session.headers = header
-        # do not use this!
 
     def add_elem(self, elements: dict) -> None:
         for i in elements.items():

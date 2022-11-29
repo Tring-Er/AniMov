@@ -9,8 +9,8 @@ from urllib import parse as p
 
 from bs4 import BeautifulSoup as BS
 
-from ..utils.scraper import WebScraper
-from ..utils.onstartup import Startup
+from AniMov.elements.WebScraper import WebScraper
+from ..utils.onstartup import windows_or_linux
 
 sys.path.append("..")
 
@@ -19,8 +19,11 @@ x: Callable[[Any], str] = (
 )
 
 
+BASE_URL = "https://www.actvid.com"
+
+
 class Actvid(WebScraper):
-    def __init__(self, base_url) -> None:
+    def __init__(self, base_url=BASE_URL) -> None:
         super().__init__(base_url)
         self.userinput = None
         self.base_url = base_url
@@ -30,14 +33,10 @@ class Actvid(WebScraper):
         self.rab_domain = x(
             "https://rabbitstream.net:443"
         )
-        # encoding and then decoding the url
-        # self.redo()
-        # IMP: self.client.get/post always returns a response object
-        # self.client.post/get -> httpx.response
 
     def search(self, query: str = None) -> str:
         query = (
-            input(self.blue("[!] Please Enter the name of the Movie: "))
+            input("[!] Please Enter the name of the Movie: ")
             if query is None
             else query
         )
@@ -68,9 +67,7 @@ class Actvid(WebScraper):
             i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
         ]
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
-            )
         )
         link_season_ids = f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
         response_season_ids = self.client.get(link_season_ids)
@@ -78,9 +75,7 @@ class Actvid(WebScraper):
         episode = episodes[
             int(
                 input(
-                    self.lmagenta(
                         f"Please input the episode number(total episodes in season:{season}):{len(episodes)} : "
-                    )
                 )
             )
             - 1
@@ -136,17 +131,8 @@ class Actvid(WebScraper):
         parts = p.urlparse(url, allow_fragments=True, scheme="/").path.split("/")
         return re.findall(r'(https:\/\/.*\/embed-4)', url)[0].replace("embed-4", "ajax/embed-4/"), parts[-1]
 
-    ## decryption
-    ## Thanks to Twilight
-
-    # def determine_char_enc(self, value):
-    #    result = chardet.detect(value)['encoding']
-    #    return result
-
-    # websocket simulation
-
     def gh_key(self):
-        with open(f"{Startup.winorlinux()}/movclikey.txt") as f:
+        with open(f"{windows_or_linux()}/animovkey.txt") as f:
             u = f.read()
         return bytes(u, 'utf-8')
 
@@ -190,7 +176,7 @@ class Actvid(WebScraper):
                 iframe_url, tv_id = self.get_link(server_id)
                 iframe_link, iframe_id = self.rabbit_id(iframe_url)
                 url = self.cdn_url(iframe_link, iframe_id)
-                self.dl(url, name, season=s + 1, episode=eps + 1)
+                self.download(url, name, season=s + 1, episode=eps + 1)
 
     def tv_pand_dp(self, title: list, state: str = "d" or "p" or "sd"):
         name = title[self.title]
@@ -203,7 +189,7 @@ class Actvid(WebScraper):
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
         if state == "d":
-            self.dl(url, name, season=season, episode=ep)
+            self.download(url, name, season=season, episode=ep)
             return
         self.play(url, name)
 
@@ -214,7 +200,7 @@ class Actvid(WebScraper):
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")

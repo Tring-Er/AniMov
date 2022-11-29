@@ -2,18 +2,21 @@ import urllib
 
 from bs4 import BeautifulSoup as BS
 
-from ..utils.scraper import WebScraper
+from AniMov.elements.WebScraper import WebScraper
+
+
+BASE_URL = "https://eja.tv"
 
 
 class Eja(WebScraper):
-    def __init__(self, base_url):
+    def __init__(self, base_url=BASE_URL):
         super().__init__(base_url)
         self.base_url = base_url
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:80.0) Gecko/20100101 Firefox/80.0"}
 
     def search(self, q: str = None):
         q = (
-            input(self.blue("[!] Enter a Channel: "))
+            input("[!] Enter a Channel: ")
             if q is None
             else q
         )
@@ -51,7 +54,7 @@ class Eja(WebScraper):
         name = m[self.title]
         url = self.get_hls(m[self.aid])
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         self.play(url, name)
 

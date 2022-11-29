@@ -3,8 +3,11 @@ from bs4 import BeautifulSoup as BS
 from .actvid import Actvid
 
 
+BASE_URL = "https://sflix.se"
+
+
 class Sflix(Actvid):
-    def __init__(self, base_url) -> None:
+    def __init__(self, base_url=BASE_URL) -> None:
         super().__init__(base_url)
         self.base_url = base_url
         self.rep_key = "6LeWLCYeAAAAAL1caYzkrIY-M59Vu41vIblXQZ48"
@@ -15,9 +18,7 @@ class Sflix(Actvid):
             i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
         ]
         season = input(
-            self.lmagenta(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
-            )
         )
         response_season_ids = self.client.get(
             f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
@@ -26,9 +27,7 @@ class Sflix(Actvid):
         episode = episodes[
             int(
                 input(
-                    self.lmagenta(
                         f"Please input the episode number(total episodes in season:{season}):{len(episodes)} : "
-                    )
                 )
             )
             - 1

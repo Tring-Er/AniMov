@@ -1,12 +1,15 @@
 import re
 
-from ..utils.scraper import WebScraper
-
 from bs4 import BeautifulSoup as BS
+
+from AniMov.elements.WebScraper import WebScraper
+
+
+BASE_URL = "https://ustvgo.tv"
 
 
 class Ustvgo(WebScraper):
-    def __init__(self, base_url):
+    def __init__(self, base_url=BASE_URL):
         super().__init__(base_url)
         self.base_url = base_url
 
@@ -50,7 +53,7 @@ class Ustvgo(WebScraper):
         name = m[self.title]
         url = self.stream_link(f"{m[self.url]}")
         if state == "d":
-            self.dl(url, name)
+            self.download(url, name)
             return
         self.play(url, name)
 
