@@ -35,45 +35,25 @@ def ani_mov():
     if platform.system() == "Windows":
         os.system("color FF")
 
-    initial_message = """
-Movies and Shows:
-theflix
-actvid
-sflix
-solar
-dopebox
-ask4movie
 
-Live TV:
-eja
-ustvgo / US IP ONLY
+get_key()
 
-Cartoons:
-kimcartoon
-
-Sports:
-9goal / Football
-
-The name of the provider """
-
-    get_key()
-
-
-    while True:
-        try:
-            print(f"Current provider: {calls[current_provider][1]}")
-            provider_data = calls.get(current_provider, calls[current_provider])
-            provider: WebScraper = provider_data[0](provider_data[1])
-            provider.redo()
+current_provider = DEFAULT_PROVIDER
+while True:
+    try:
+        print(f"Current provider: {PROVIDER_OPTIONS[current_provider][1]}")
+        provider_data = PROVIDER_OPTIONS.get(current_provider, PROVIDER_OPTIONS[current_provider])
+        provider: WebScraper = provider_data[0](provider_data[1])
+        provider.redo()
+        break
+    except UnicodeDecodeError as error:
+        print("The Current Provider has changed", error)
+    except Exception as error:
+        print("[!] An error has occurred | ", error)
+        user_choice = input("Switch to another provider? (y or n): ")
+        if user_choice == "n":
             break
-        except UnicodeDecodeError as e:
-            print("The Current Provider has changed", e)
-        except Exception as e:
-            print("[!] An error has occurred | ", e)
-            user_choice = input("Switch to another provider? (y or n): ")
-            if user_choice == "n":
-                return
-            current_provider += 1
+        current_provider += 1
 
 
 if __name__ == '__main__':
