@@ -99,8 +99,11 @@ class WebScraper:
                     print(f"[!]  This Episode is coming soon! | ", str(e))
                     exit(1)
             else:
-                print("[!] No index inserted")
-                exit(1)
+                selected_show_data = titles_available_data[int(choice) - 1]
+                if selected_show_data[self.show_type_index] == "TV":
+                    self.download_or_play_tv_show(selected_show_data, "p")
+                else:
+                    self.download_or_play_movie(selected_show_data, "p")
 
     def redo(self):
         self.display()
