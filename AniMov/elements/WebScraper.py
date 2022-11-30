@@ -3,7 +3,7 @@ from subprocess import Popen
 from sys import exit
 
 
-from AniMov.utils.httpclient import HttpClient
+from AniMov.utils.HttpClient import HttpClient
 
 
 class WebScraper:

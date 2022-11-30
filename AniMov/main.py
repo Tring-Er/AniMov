@@ -1,13 +1,13 @@
 from AniMov.elements.WebScraper import WebScraper
-from AniMov.websites.theflix import TheFlix
+from AniMov.websites.TheFlix import TheFlix
 
 PROVIDER_OPTIONS = [TheFlix]
 
 
 def ani_mov():
     for provider in PROVIDER_OPTIONS:
+        provider_object: WebScraper = provider()
         try:
-            provider_object: WebScraper = provider()
             provider_object.redo()
             break
         except UnicodeDecodeError as e:
