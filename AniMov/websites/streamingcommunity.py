@@ -1,7 +1,7 @@
 from ..utils.httpclient import HttpClient
 
 
-from bs4 import BeautifulSoup as bs
+from bs4 import BeautifulSoup
 from lxml import etree
 
 
@@ -20,7 +20,7 @@ class StreamingCommunity:
         series_name = query.replace(" ", "-").lower()
         # Get the show page
         raw_page = self.http_client.get(f"{self.base_url}/titles/{series_name}/")
-        main_page = bs(raw_page.content, "html.parser")
+        main_page = BeautifulSoup(raw_page.content, "html.parser")
         # Retrieve how many seasons the show has by xpath
         dom = etree.HTML(str(main_page))
         raw_number_of_seasons = dom.xpath("/html/body/div[2]/main/div[1]/div[1]/div[1]/div/div/div[1]/span[2]")[0].text
