@@ -3,8 +3,6 @@ import platform
 
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.websites.theflix import TheFlix
-from AniMov.websites.ustvgo import Ustvgo
-from AniMov.websites.kimcartoon import KimCartoon
 from AniMov.websites.actvid import Actvid
 from AniMov.websites.dopebox import DopeBox
 from AniMov.websites.sflix import Sflix
@@ -16,14 +14,11 @@ from AniMov.utils.onstartup import get_key
 DEFAULT_PROVIDER = "theflix"
 PROVIDER_OPTIONS = {
     "theflix": TheFlix,
-    "ustvgo": Ustvgo,
-    "kimcartoon": KimCartoon,
     "actvid": Actvid,
     "sflix": Sflix,
     "solar": Solar,
     "dopebox": DopeBox,
-    "9goal": Goal9,
-}
+    "9goal": Goal9}
 
 INITIAL_MESSAGE = """
 Movies and Shows:
@@ -32,14 +27,6 @@ actvid
 sflix
 solar
 dopebox
-ask4movie
-
-Live TV:
-eja
-ustvgo / US IP ONLY
-
-Cartoons:
-kimcartoon
 
 Sports:
 9goal / Football
