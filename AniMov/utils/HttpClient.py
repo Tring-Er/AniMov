@@ -1,6 +1,6 @@
-import sys
+from sys import exit
 
-import httpx
+from httpx import Client, Response
 
 DEFAULT_HEADERS: dict = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
@@ -13,36 +13,27 @@ DEFAULT_HEADERS: dict = {
 class HttpClient:
 
     def __init__(self):
-        self.session = httpx.Client(timeout=10.0, headers=DEFAULT_HEADERS)
+        self.session = Client(timeout=10.0, headers=DEFAULT_HEADERS)
 
-    def get(self, page: str) -> httpx.Response:
-        print(page)
+    def get(self, link: str) -> Response:
         try:
-            response = self.session.get(page)
-            self.session.headers["Referer"] = page
+            response = self.session.get(link)
+            self.session.headers["Referer"] = link
         except Exception as e:
-            print(
-                f"Error: {e}",
-                "\n Please open an issue if this is not due due to your internet connection",
-            )
-            sys.exit(-1)
+            print(f"Error: {e}\n"
+                  f"Please open an issue if this is not due due to your internet connection")
+            exit(-1)
         return response
 
-    def post(self, page: str, data: dict) -> httpx.Response:
+    def post(self, link: str, query: dict) -> Response:
         try:
-            response = self.session.post(page, data=data)
-            self.session.headers["Referer"] = page
+            response = self.session.post(link, data=query)
+            self.session.headers["Referer"] = link
         except Exception as e:
-            print(
-                f"Error: {e}",
-                "\n Please open an issue if this is not due due to your internet connection",
-            )
-            sys.exit(-1)
+            print(f"Error: {e}\n"
+                  f"Please open an issue if this is not due due to your internet connection")
+            exit(-1)
         return response
 
     def set_headers(self, header: dict) -> None:
         self.session.headers = header
-
-    def add_elem(self, elements: dict) -> None:
-        for i in elements.items():
-            self.session.headers[i[0]] = i[1]
