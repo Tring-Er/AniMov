@@ -18,7 +18,6 @@ from AniMov.utils.onstartup import get_key
 DEFAULT_PROVIDER = "theflix"
 PROVIDER_OPTIONS = {
     "theflix": TheFlix,
-    "eja": Eja,
     "ask4movie": Ask4Movie,
     "ustvgo": Ustvgo,
     "kimcartoon": KimCartoon,
