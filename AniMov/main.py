@@ -3,7 +3,6 @@ import platform
 
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.websites.theflix import TheFlix
-from AniMov.websites.vidsrc import VidSrc
 from AniMov.websites.eja import Eja
 from AniMov.websites.ask4movie import Ask4Movie
 from AniMov.websites.ustvgo import Ustvgo
@@ -19,7 +18,6 @@ from AniMov.utils.onstartup import get_key
 DEFAULT_PROVIDER = "theflix"
 PROVIDER_OPTIONS = {
     "theflix": TheFlix,
-    "vidsrc": VidSrc,
     "eja": Eja,
     "ask4movie": Ask4Movie,
     "ustvgo": Ustvgo,
