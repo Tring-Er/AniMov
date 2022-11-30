@@ -161,7 +161,7 @@ class Actvid(WebScraper):
         )
         return self.unpad(p).decode()
     
-    def download(self, series_id: str, name):
+    def download_show(self, series_id: str, name):
         response_season = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
         season_ids = [
             i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
@@ -176,12 +176,12 @@ class Actvid(WebScraper):
                 iframe_url, tv_id = self.get_link(server_id)
                 iframe_link, iframe_id = self.rabbit_id(iframe_url)
                 url = self.cdn_url(iframe_link, iframe_id)
-                self.download(url, name, season=s + 1, episode=eps + 1)
+                self.download_show(url, name, season=s + 1, episode=eps + 1)
 
-    def tv_pand_dp(self, title: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_tv_show(self, title: list, state: str = "d" or "p" or "sd"):
         name = title[self.title_index]
         if state == "sd":
-            self.download(title[self.show_id_index], name)
+            self.download_show(title[self.show_id_index], name)
             return
         episode, season, ep = self.ask(title[self.show_id_index])
         server_id = self.ep_server_id(episode)
@@ -189,23 +189,23 @@ class Actvid(WebScraper):
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
         if state == "d":
-            self.download(url, name, season=season, episode=ep)
+            self.download_show(url, name, season=season, episode=ep)
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_movie(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title_index]
         sid = self.server_id(m[self.show_id_index])
         iframe_url, tv_id = self.get_link(sid)
         iframe_link, iframe_id = self.rabbit_id(iframe_url)
         url = self.cdn_url(iframe_link, iframe_id)
         if state == "d":
-            self.download(url, name)
+            self.download_show(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
     def send_search_request(self, q: str = None):
         return self.results(self.search_available_titles(q))

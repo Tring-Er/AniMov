@@ -94,10 +94,10 @@ class OlgPly(WebScraper):
                     name = mov[0]
                     if mov[-1] == "TV":
                         cdn_url, name = self.ask(mov[2], name)
-                        self.download(cdn_url, name)
+                        self.download_show(cdn_url, name)
                     else:
                         cdn, name = self.cdn_url(name)
-                        self.download(cdn, name)
+                        self.download_show(cdn, name)
                 except ValueError as e:
                     print(
                         f"[!]  Invalid Choice Entered! | ",
@@ -114,10 +114,10 @@ class OlgPly(WebScraper):
                 selection = result[int(choice) - 1]
                 if selection[-1] == "TV":
                     cdn_url, name = self.ask(selection[2], selection[0])
-                    self.play(cdn_url, name)
+                    self.play_show(cdn_url, name)
                 else:
                     cdn, name = self.cdn_url(selection[0])
-                    self.play(cdn, name)
+                    self.play_show(cdn, name)
 
     def redo(self, query: str = None, result: int = None):
         if query is None:

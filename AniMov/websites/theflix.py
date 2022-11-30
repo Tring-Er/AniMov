@@ -20,6 +20,7 @@ class TheFlix(WebScraper):
         self.t_available_garbage = -2
         self.total_number_of_seasons_index = 4
 
+    #  TODO To understand what this does precisely
     def parse(self, text: str):  # text = "This is a TEST"
         first_letter_lowercase = text[0].lower()  # first_letter_lowercase = t
         list_garbage = []  # his is a  T E S T
@@ -104,61 +105,32 @@ class TheFlix(WebScraper):
             data.append(k)
         return data
 
-    def page(self, info: list):
-        return f"{self.base_url}/movie/{info[1]}-{info[0]}", info[0]
+    def create_movie_url(self, show_title: str, show_id: str) -> str:
+        return f"{self.base_url}/movie/{show_id}-{show_title}"
 
     def get_url_and_formatted_data(self, show_title, show_id, selected_season, selected_episode) -> tuple[str, str]:
         return f"{self.base_url}/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-{selected_episode}", f"{show_title}_S_{selected_season}_EP_{selected_episode}"
 
-    def cdn_url(self, link, info, k):
-        self.client.set_headers({"Cookie": k})
-        obj_id = json.loads(
-            BS(self.client.get(link).text, "lxml")
-            .select("#__NEXT_DATA__")[0]
-            .text
-        )["props"]["pageProps"]["movie"]["videos"][0]
-        self.client.set_headers({"Cookie": k})
-        link = self.client.get(
-            f"https://theflix.to:5679/movies/videos/{obj_id}/request-access?contentUsageType=Viewing"
-        ).json()["url"]
-        return link, info
+    def get_show_cnd_url(self, show_url: str, cookies) -> str:
+        self.client.set_headers({"Cookie": cookies})
+        show_cdn_id = json.loads(BS(self.client.get(show_url).text, "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["movie"]["videos"][0]
+        self.client.set_headers({"Cookie": cookies})
+        show_cdn_url = self.client.get(f"https://theflix.to:5679/movies/videos/{show_cdn_id}/request-access?contentUsageType=Viewing").json()["url"]
+        return show_cdn_url
 
-    def get_season_episode(self, link):
-        return (
-            re.search(r"(?<=season-)\d+", link).group(),
-            re.search(r"(?<=episode-)\d+", link).group(),
-        )
-
-    def cdn_url_ep(self, link, info, k):
-        season, episode = self.get_season_episode(link)
-        self.client.set_headers({"Cookie": k})
-        f = json.loads(
-            BS(self.client.get(link).text, "lxml")
-            .select("#__NEXT_DATA__")[0]
-            .text
-        )["props"]["pageProps"]["selectedTv"]["seasons"]
+    def get_episode_cdn_url(self, url, selected_season, selected_episode, cookies):
+        self.client.set_headers({"Cookie": cookies})
+        show_data = json.loads(BS(self.client.get(url).text, "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["seasons"]
         try:
-            episode_id = f[int(season) - 1]["episodes"][int(episode) - 1]["videos"][0]
+            episode_id = show_data[int(selected_season) - 1]["episodes"][int(selected_episode) - 1]["videos"][0]
         except IndexError:
-            print(
-                "Episode unavailable",
-                "Bye!",
-                "Maybe try "
-                "one of the "
-                "other "
-                "websites or "
-                "request the "
-                "episode to "
-                "be added by "
-                "contacting "
-                "theflix"
-            )
+            print("Episode unavailable",
+                  "Bye!",
+                  "Maybe try one of the other websites or request the episode to be added by contacting theflix")
             exit()
-        self.client.set_headers({"Cookie": k})
-        link = self.client.get(
-            f"https://theflix.to:5679/tv/videos/{episode_id}/request-access?contentUsageType=Viewing"
-        ).json()["url"]
-        return link, info
+        self.client.set_headers({"Cookie": cookies})
+        cdn_url = self.client.get(f"https://theflix.to:5679/tv/videos/{episode_id}/request-access?contentUsageType=Viewing").json()["url"]
+        return cdn_url
 
     def get_season_info(self, total_number_of_seasons: int, show_id, show_title, cookies: str):
         selected_season = input(f"Please input the season number(total seasons:{total_number_of_seasons}): ")
@@ -170,23 +142,24 @@ class TheFlix(WebScraper):
     def send_search_request(self) -> list[list]:
         return self.search_available_titles()
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p"):
-        name = m[self.title_index]
-        page = self.page(m)
-        url, name = self.cdn_url(page[0], name, self.cookies)
+    def download_or_play_movie(self, show_data: list, state: str = "d" or "p") -> None:
+        show_title = show_data[self.title_index]
+        show_id = show_data[1]
+        show_url = self.create_movie_url(show_title, show_id)
+        cdn_url = self.get_show_cnd_url(show_url, self.cookies)
         if state == "d":
-            self.download(url, name)
-            return
-        self.play(url, name)
+            self.download_show(cdn_url, show_title)
+        else:
+            self.play_show(cdn_url, show_title)
 
-    def tv_pand_dp(self, show_data: list, state: str = "d" or "p"):
+    def download_or_play_tv_show(self, show_data: list, state: str = "d" or "p") -> None:
         formatted_show_data = show_data[self.title_index]
         total_number_of_seasons = show_data[self.total_number_of_seasons_index]
         show_id = show_data[self.show_id_index]
         selected_season, total_number_of_episodes, selected_episode = self.get_season_info(total_number_of_seasons, show_id, formatted_show_data, self.cookies)
         url, formatted_show_data = self.get_url_and_formatted_data(formatted_show_data, show_id, selected_season, selected_episode)
-        cdn, formatted_show_data = self.cdn_url_ep(url, formatted_show_data, self.cookies)
+        cdn_url = self.get_episode_cdn_url(url, selected_season, selected_episode, self.cookies)
         if state == "d":
-            self.download(cdn, formatted_show_data)
-            return
-        self.play(cdn, formatted_show_data)
+            self.download_show(cdn_url, formatted_show_data)
+        else:
+            self.play_show(cdn_url, formatted_show_data)

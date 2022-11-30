@@ -45,7 +45,7 @@ class KimCartoon(WebScraper):
         url = episodes[len(episodes) - episode]["href"]
         return url, episode
     
-    def download(self, t: list):
+    def download_show(self, t: list):
         response = self.client.get(self.base_url + t[self.url_index])
         soup = BS(response, "lxml")
         table = soup.find("table", {"class": "listing"})
@@ -54,7 +54,7 @@ class KimCartoon(WebScraper):
             epi = e + 1
             link = episodes[len(episodes) - epi]["href"]
             url = self.cdn_url(link)
-            self.download(url, t[self.title_index], episode=e + 1)
+            self.download_show(url, t[self.title_index], episode=e + 1)
     
     def cdn_url(self, url):
         response = self.client.get(self.base_url + url).text
@@ -69,19 +69,19 @@ class KimCartoon(WebScraper):
         url = table.findAll("a", {"rel": "noreferrer noopener"})[0]["href"]
         return url
 
-    def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_tv_show(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
-            self.download(t)
+            self.download_show(t)
             return
         name = t[self.title_index]
         link, episode = self.ask(t[self.url_index])
         url = self.cdn_url(link)
         if state == "d":
-            self.download(url, name, season=".", episode=episode)
+            self.download_show(url, name, season=".", episode=episode)
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_movie(self, m: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             print("Only Shows can be downloaded with sd")
             return
@@ -89,6 +89,6 @@ class KimCartoon(WebScraper):
         link = self.mov_table(f"{m[self.url_index]}")
         url = self.cdn_url(link)
         if state == "d":
-            self.download(url, name)
+            self.download_show(url, name)
             return
-        self.play(url, name)
+        self.play_show(url, name)

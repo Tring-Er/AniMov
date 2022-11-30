@@ -120,9 +120,9 @@ class VidSrc(WebScraper):
                 iframe = self.get_player_iframe(f"{t[self.url_index]}/{i + 1}-{e + 1}")
                 url, enable = self.cdn_url(iframe)
                 self.enabler(enable)
-                self.download(url, t[self.title_index], season=i + 1, episode=e + 1)
+                self.download_show(url, t[self.title_index], season=i + 1, episode=e + 1)
 
-    def tv_pand_dp(self, infos: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_tv_show(self, infos: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             self.show_download(infos)
         name = infos[self.title_index]
@@ -132,22 +132,22 @@ class VidSrc(WebScraper):
         self.enabler(enable)
         print(url)
         if state == "d":
-            self.download(url, name, season=season, episode=episode)
+            self.download_show(url, name, season=season, episode=episode)
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
-    def mov_pand_dp(self, infos: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_movie(self, infos: list, state: str = "d" or "p" or "sd"):
         name = infos[self.title_index]
         iframe = self.get_player_iframe(f"{infos[self.url_index]}")
         url, enable = self.cdn_url(iframe)
         self.enabler(enable)
         if state == "d":
-            self.download(url, name)
+            self.download_show(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
     def send_search_request(self, q: str = None):
         return self.results(self.search_available_titles(q))

@@ -20,72 +20,42 @@ class WebScraper:
     def parse(txt: str) -> str:
         return txt.lower().replace(" ", "-")
 
-    def download(
-            self, url: str, name: str, subtitle: str = None, season=None, episode=None
-    ):
-        name = self.parse(name)
-        fixname = name.replace("-", " ")
-        if season or episode is None:
-            pass
-        else:
-            fixname = f"{fixname}S{season}E{episode}"
-
-        args = [
-            'ffmpeg',
-            '-n',
-            '-thread_queue_size',
-            '4096',
-            '-err_detect',
-            'ignore_err',
-            '-i',
-            f'{url}',
-            "-user_agent",
-            '"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"',
-            '-c',
-            'copy',
-            '-preset',
-            'ultrafast',
-            f'{fixname}.mp4'
-        ]
-
+    def download_show(self, cnd_url: str, formatted_show_data: str, subtitle: str = None, season=None, episode=None):
+        another_formatted_show_data = self.parse(formatted_show_data).replace("-", " ")
+        if season is not None and episode is not None:
+            another_formatted_show_data = f"{another_formatted_show_data}S{season}E{episode}"
+        ffmpeg_args = ['ffmpeg',
+                       '-n',
+                       '-thread_queue_size',
+                       '4096',
+                       '-err_detect',
+                       'ignore_err',
+                       '-i',
+                       f'{cnd_url}',
+                       "-user_agent",
+                       '"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"',
+                       '-c',
+                       'copy',
+                       '-preset',
+                       'ultrafast',
+                       f'{another_formatted_show_data}.mp4']
         if subtitle:
-            args.extend(
-                ["-vf", f"subtitle={subtitle}", f"{fixname}.mp4"]
-            )
-        ffmpeg_process = Popen(args)
+            ffmpeg_args.extend(["-vf", f"subtitle={subtitle}", f"{another_formatted_show_data}.mp4"])
+        ffmpeg_process = Popen(ffmpeg_args)
         ffmpeg_process.wait()
-
         return print(f"Downloaded at {getcwd()}")
 
-    def play(self, url: str, name: str):
+    def play_show(self, cnd_url: str, show_formatted_data: str):
         try:
-            try:
-                args = [
-                    "mpv",
+            args = ["mpv",
                     f"--referrer={self.base_url}",
-                    f"{url}",
-                    f"--force-media-title=mov-cli:{name}",
-                    "--no-terminal",
-                ]
-
-                mpv_process = Popen(
-                    args
-                )
-                mpv_process.wait()
-            except ModuleNotFoundError:
-                args = [
-                    "vlc",
-                    f"--http-referrer={self.base_url}",
-                    f"{url}",
-                    f"--meta-title=mov-cli{name}",
-                    "--no-terminal",
-                ]
-                vlc_process = Popen(
-                    args
-                )
-                vlc_process.wait()
-        except Exception as e:
-            print(f"[!]Could not play {name}: MPV or VLC not found | {e}")
+                    f"{cnd_url}",
+                    f"--force-media-title=mov-cli:{show_formatted_data}",
+                    "--no-terminal"]
+            mpv_process = Popen(args)
+            mpv_process.wait()
+        except ModuleNotFoundError:
+            print(f"[!]Could not play {show_formatted_data}: MPV not found")
             exit(1)
 
     def search_available_titles(self, q: str = None) -> str:
@@ -94,10 +64,10 @@ class WebScraper:
     def results(self, data: str) -> list:
         raise NotImplementedError()
 
-    def tv_pand_dp(self, t: list, state: str = "d" or "p"):
+    def download_or_play_tv_show(self, t: list, state: str = "d" or "p"):
         pass
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p"):
+    def download_or_play_movie(self, m: list, state: str = "d" or "p"):
         pass
 
     def send_search_request(self, q: str = None):
@@ -105,11 +75,10 @@ class WebScraper:
 
     def display(self):
         titles_available = self.send_search_request()
-        for show_index, title_data in enumerate(titles_available, start=1):
-            print(f"[{show_index}] {title_data[self.title_index]} {title_data[self.show_type_index]}\n")
+        for show_count, title_data in enumerate(titles_available, start=1):
+            print(f"[{show_count}] {title_data[self.title_index]} {title_data[self.show_type_index]}\n")
         print("[q] Exit!\n"
-              "[d] Download!\n"
-              "[sd] Download Whole Show!\n")
+              "[d] Download!\n")
         choice = None
         while choice not in range(len(titles_available) + 1):
             choice = input("Enter your choice: ")
@@ -120,53 +89,18 @@ class WebScraper:
                     show_to_download_index = int(input("[!] Please enter the number of the movie you want to download: ")) - 1
                     show_to_download_data = titles_available[show_to_download_index]
                     if show_to_download_data[self.show_type_index] == "TV":
-                        self.tv_pand_dp(show_to_download_data, "d")
+                        self.download_or_play_tv_show(show_to_download_data, "d")
                     else:
-                        self.mov_pand_dp(show_to_download_data, "d")
+                        self.download_or_play_movie(show_to_download_data, "d")
                 except ValueError as e:
-                    print(
-                        f"[!]  Invalid Choice Entered! | ",
-                        str(e),
-                    )
+                    print(f"[!]  Invalid Choice Entered! | ", str(e))
                     exit(1)
                 except IndexError as e:
-                    print(
-                        f"[!]  This Episode is coming soon! | ",
-                        str(e),
-                    )
-                    exit(1)
-            elif choice == "sd":
-                try:
-                    mov_or_tv = titles_available[
-                        int(
-                            input(
-                                "[!] Please enter the number of the movie you want to download: "
-                            )
-                        )
-                        - 1
-                        ]
-                    if mov_or_tv[self.show_type_index] == "TV":
-                        self.tv_pand_dp(mov_or_tv, "sd")
-                    else:
-                        self.mov_pand_dp(mov_or_tv, "sd")
-                except ValueError as e:
-                    print(
-                        f"[!]  Invalid Choice Entered! | ",
-                        str(e),
-                    )
-                    exit(1)
-                except IndexError as e:
-                    print(
-                        f"[!]  This Episode is coming soon! | ",
-                        str(e),
-                    )
+                    print(f"[!]  This Episode is coming soon! | ", str(e))
                     exit(1)
             else:
-                mov_or_tv = titles_available[int(choice) - 1]
-                if mov_or_tv[self.show_type_index] == "TV":
-                    self.tv_pand_dp(mov_or_tv, "p")
-                else:
-                    self.mov_pand_dp(mov_or_tv, "p")
+                print("[!] No index inserted")
+                exit(1)
 
     def redo(self):
         self.display()

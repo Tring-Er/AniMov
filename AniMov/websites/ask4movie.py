@@ -106,9 +106,9 @@ class Ask4Movie(WebScraper):
         for e in range(len(episodes)):
             url = episodes[e]["data-url"].split("/")[2]
             url = self.cdn_url(url)
-            self.download(url, t[self.title_index], episode=e + 1, season=season)
+            self.download_show(url, t[self.title_index], episode=e + 1, season=season)
 
-    def tv_pand_dp(self, t: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_tv_show(self, t: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             if t[self.url_index].__contains__("channel"):
                 print("Do a Direct Selection on what Season you want to download.")
@@ -123,21 +123,21 @@ class Ask4Movie(WebScraper):
         name = t[self.title_index]
         url = self.cdn_url(url)
         if state == "d":
-            self.download(url, name, episode=episode, season=season)
+            self.download_show(url, name, episode=episode, season=season)
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_movie(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title_index]
         url = self.movie(m[self.url_index])
         url = self.cdn_url(url)
         if state == "d":
-            self.download(url, name)
+            self.download_show(url, name)
             return
         if state == "sd":
             print("You can download only Shows with 'sd'")
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
     def send_search_request(self, q: str = None):
         return self.results(self.search_available_titles(q))

@@ -50,13 +50,13 @@ class Eja(WebScraper):
         print(link)
         return link
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p"):
+    def download_or_play_movie(self, m: list, state: str = "d" or "p"):
         name = m[self.title_index]
         url = self.get_hls(m[self.show_id_index])
         if state == "d":
-            self.download(url, name)
+            self.download_show(url, name)
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
     def send_search_request(self, q: str = None):
         return self.results(self.search_available_titles(q))

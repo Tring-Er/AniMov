@@ -25,14 +25,14 @@ class Goal9(WebScraper):
         mov_or_tv = [f"{name}" for i in range(len(streams))]
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_movie(self, m: list, state: str = "d" or "p" or "sd"):
         if state == "sd":
             print("You can't Showdownload Football Match!?")
             return
         if state == "d":
-            self.download(m[self.url_index], m[self.title_index])
+            self.download_show(m[self.url_index], m[self.title_index])
             return
-        self.play(m[self.url_index], m[self.title_index])
+        self.play_show(m[self.url_index], m[self.title_index])
         
     def send_search_request(self, q: str = None):
         return self.results(self.search_available_titles(q))

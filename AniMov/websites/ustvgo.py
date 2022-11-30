@@ -49,13 +49,13 @@ class Ustvgo(WebScraper):
         print(uri)
         return uri
 
-    def mov_pand_dp(self, m: list, state: str = "d" or "p" or "sd"):
+    def download_or_play_movie(self, m: list, state: str = "d" or "p" or "sd"):
         name = m[self.title_index]
         url = self.stream_link(f"{m[self.url_index]}")
         if state == "d":
-            self.download(url, name)
+            self.download_show(url, name)
             return
-        self.play(url, name)
+        self.play_show(url, name)
 
     def send_search_request(self, q: str = None):
         return self.results(q)
