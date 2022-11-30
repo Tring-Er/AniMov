@@ -2,7 +2,7 @@ import sys
 
 import httpx
 
-default_header: dict = {
+DEFAULT_HEADERS: dict = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/80.0.3987.163 "
     "Safari/537.36",
@@ -12,10 +12,8 @@ default_header: dict = {
 
 class HttpClient:
 
-    def __init__(self, headers: dict = None):
-        if headers is None:
-            headers = default_header
-        self.session = httpx.Client(timeout=10.0, headers=headers)
+    def __init__(self):
+        self.session = httpx.Client(timeout=10.0, headers=DEFAULT_HEADERS)
 
     def get(self, page: str) -> httpx.Response:
         print(page)
