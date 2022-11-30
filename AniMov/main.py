@@ -1,14 +1,19 @@
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.websites.theflix import TheFlix
+from AniMov.websites.streamingcommunity import StreamingCommunity
 
-PROVIDER_OPTIONS = [TheFlix]
+PROVIDER_OPTIONS = [
+    StreamingCommunity,
+    TheFlix
+]
 
 
 def ani_mov():
     for provider in PROVIDER_OPTIONS:
         try:
             provider_object: WebScraper = provider()
-            provider_object.redo()
+            provider_object.search()
+            #provider_object.redo()
             break
         except UnicodeDecodeError as e:
             print("The Current Provider has changed", e)
