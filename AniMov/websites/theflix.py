@@ -48,8 +48,8 @@ class TheFlix(WebScraper):
               "[ts] Trending TV Shows\n"
               "[tm] Trending Movies\n"
               "[q] Quit\n")
-        choice = input("Enter your choice: ").lower()
-        if choice == "s":
+        option_choice = input("Enter your choice: ").lower()
+        if option_choice == "s":
             show_title = input("[!] Please Enter the name of a Movie or TV Show: ")
             data = []
             for j in self.create_junk_list_1(show_title):
@@ -61,47 +61,29 @@ class TheFlix(WebScraper):
                 exit(1)
             else:
                 return data
-        elif choice == "ts":
+        elif option_choice == "ts":
             return self.trending_tv_shows()
-        elif choice == "tm":
+        elif option_choice == "tm":
             return self.trending_movies()
-        elif choice == "q":
+        elif option_choice == "q":
             print("Bye!")
             exit(1)
 
+    def create_junk_list_3(self) -> list:
+        return [[self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]] for i in json.loads(BS(self.client.get(f"https://theflix.to/tv-shows/trending"), "lxml",).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"]if i["available"]]
+
     def trending_tv_shows(self):
         data = []
-        for j in [
-            [self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]]
-            for i in json.loads(
-                BS(
-                    self.client.get(f"https://theflix.to/tv-shows/trending"),
-                    "lxml",
-                )
-                        .select("#__NEXT_DATA__")[0]
-                        .text
-            )["props"]["pageProps"]["mainList"]["docs"]
-            if i["available"]
-        ]:
+        for j in self.create_junk_list_3():
             data.append(j)
         return data
 
+    def create_junk_list_4(self) -> list:
+        return [[self.parse(i["name"]), i["id"], "MOVIE", i["available"]] for i in json.loads(BS(self.client.get(f"https://theflix.to/movies/trending"), "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+
     def trending_movies(self):
         data = []
-        for k in [
-            [self.parse(i["name"]), i["id"], "MOVIE", i["available"]]
-            for i in json.loads(
-                BS(
-                    self.client.get(
-                        f"https://theflix.to/movies/trending"
-                    ),
-                    "lxml",
-                )
-                        .select("#__NEXT_DATA__")[0]
-                        .text
-            )["props"]["pageProps"]["mainList"]["docs"]
-            if i["available"]
-        ]:
+        for k in self.create_junk_list_4():
             data.append(k)
         return data
 
