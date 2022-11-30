@@ -1,9 +1,9 @@
 from sys import exit
-import re
+from re import sub
 import json
-import httpx
+from httpx import post
 
-from bs4 import BeautifulSoup as BS
+from bs4 import BeautifulSoup
 
 from AniMov.elements.WebScraper import WebScraper
 
@@ -31,17 +31,17 @@ class TheFlix(WebScraper):
                 list_garbage.append(i)
         garbage = ''.join(list_garbage).lower().rstrip('.')  # "his is a  t e s t"
         name = f"{first_letter_lowercase}{garbage}"  # "this is a  t e s t
-        return re.sub("\W+", "-", name)  # "this-is-a--t-e-s-t
+        return sub("\W+", "-", name)  # "this-is-a--t-e-s-t
 
     def create_cookies(self):
         url_query = {"affiliateCode": "", "pathname": "/"}
-        return httpx.post("https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing", data=url_query).headers["Set-Cookie"]
+        return post("https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing", data=url_query).headers["Set-Cookie"]
 
     def create_junk_list_1(self, show_title: str) -> list:
-        return [[self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]] for i in json.loads(BS(self.client.get(f"https://theflix.to/tv-shows/trending?search={show_title}"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+        return [[self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/tv-shows/trending?search={show_title}"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
 
     def create_junk_list_2(self, show_title: str) -> list:
-        return [[self.parse(i["name"]), i["id"], i["available"], "MOVIE"] for i in json.loads(BS(self.client.get(f"https://theflix.to/movies/trending?search={show_title.replace(' ', '+')}"), "lxml",).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+        return [[self.parse(i["name"]), i["id"], i["available"], "MOVIE"] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/movies/trending?search={show_title.replace(' ', '+')}"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
 
     def search_available_titles(self) -> list[list]:
         print("[s] Search\n"
@@ -70,7 +70,7 @@ class TheFlix(WebScraper):
             exit(1)
 
     def create_junk_list_3(self) -> list:
-        return [[self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]] for i in json.loads(BS(self.client.get(f"https://theflix.to/tv-shows/trending"), "lxml",).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"]if i["available"]]
+        return [[self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/tv-shows/trending"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
 
     def trending_tv_shows(self):
         data = []
@@ -79,7 +79,7 @@ class TheFlix(WebScraper):
         return data
 
     def create_junk_list_4(self) -> list:
-        return [[self.parse(i["name"]), i["id"], "MOVIE", i["available"]] for i in json.loads(BS(self.client.get(f"https://theflix.to/movies/trending"), "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+        return [[self.parse(i["name"]), i["id"], "MOVIE", i["available"]] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/movies/trending"), "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
 
     def trending_movies(self):
         data = []
@@ -94,15 +94,15 @@ class TheFlix(WebScraper):
         return f"{self.base_url}/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-{selected_episode}", f"{show_title}_S_{selected_season}_EP_{selected_episode}"
 
     def get_show_cnd_url(self, show_url: str, cookies) -> str:
-        self.client.set_headers({"Cookie": cookies})
-        show_cdn_id = json.loads(BS(self.client.get(show_url).text, "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["movie"]["videos"][0]
-        self.client.set_headers({"Cookie": cookies})
-        show_cdn_url = self.client.get(f"https://theflix.to:5679/movies/videos/{show_cdn_id}/request-access?contentUsageType=Viewing").json()["url"]
+        self.http_client.set_headers({"Cookie": cookies})
+        show_cdn_id = json.loads(BeautifulSoup(self.http_client.get(show_url).text, "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["movie"]["videos"][0]
+        self.http_client.set_headers({"Cookie": cookies})
+        show_cdn_url = self.http_client.get(f"https://theflix.to:5679/movies/videos/{show_cdn_id}/request-access?contentUsageType=Viewing").json()["url"]
         return show_cdn_url
 
     def get_episode_cdn_url(self, url, selected_season, selected_episode, cookies):
-        self.client.set_headers({"Cookie": cookies})
-        show_data = json.loads(BS(self.client.get(url).text, "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["seasons"]
+        self.http_client.set_headers({"Cookie": cookies})
+        show_data = json.loads(BeautifulSoup(self.http_client.get(url).text, "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["seasons"]
         try:
             episode_id = show_data[int(selected_season) - 1]["episodes"][int(selected_episode) - 1]["videos"][0]
         except IndexError:
@@ -110,14 +110,14 @@ class TheFlix(WebScraper):
                   "Bye!",
                   "Maybe try one of the other websites or request the episode to be added by contacting theflix")
             exit()
-        self.client.set_headers({"Cookie": cookies})
-        cdn_url = self.client.get(f"https://theflix.to:5679/tv/videos/{episode_id}/request-access?contentUsageType=Viewing").json()["url"]
+        self.http_client.set_headers({"Cookie": cookies})
+        cdn_url = self.http_client.get(f"https://theflix.to:5679/tv/videos/{episode_id}/request-access?contentUsageType=Viewing").json()["url"]
         return cdn_url
 
     def get_season_info(self, total_number_of_seasons: int, show_id, show_title, cookies: str):
         selected_season = input(f"Please input the season number(total seasons:{total_number_of_seasons}): ")
-        self.client.set_headers({"cookie": cookies})
-        number_of_episodes_in_the_season = json.loads(BS(self.client.get(f"https://theflix.to/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-1"), "lxml",).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["numberOfEpisodes"]
+        self.http_client.set_headers({"cookie": cookies})
+        number_of_episodes_in_the_season = json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-1"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["numberOfEpisodes"]
         episode = input(f"Please input the episode number: ")
         return selected_season, number_of_episodes_in_the_season, episode
 

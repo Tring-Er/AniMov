@@ -9,7 +9,7 @@ from AniMov.utils.httpclient import HttpClient
 class WebScraper:
 
     def __init__(self, base_url: str) -> None:
-        self.client = HttpClient()
+        self.http_client = HttpClient()
         self.base_url = base_url
         self.title_index = 0
         self.url_index = 1
@@ -20,7 +20,7 @@ class WebScraper:
     def parse(txt: str) -> str:
         return txt.lower().replace(" ", "-")
 
-    def download_show(self, cnd_url: str, formatted_show_data: str, subtitle: str = None, season=None, episode=None):
+    def download_show(self, cnd_url: str, formatted_show_data: str, subtitle: str = None, season=None, episode=None) -> None:
         another_formatted_show_data = self.parse(formatted_show_data).replace("-", " ")
         if season is not None and episode is not None:
             another_formatted_show_data = f"{another_formatted_show_data}S{season}E{episode}"
@@ -43,7 +43,7 @@ class WebScraper:
             ffmpeg_args.extend(["-vf", f"subtitle={subtitle}", f"{another_formatted_show_data}.mp4"])
         ffmpeg_process = Popen(ffmpeg_args)
         ffmpeg_process.wait()
-        return print(f"Downloaded at {getcwd()}")
+        print(f"Downloaded at {getcwd()}")
 
     def play_show(self, cnd_url: str, show_formatted_data: str):
         try:
@@ -59,35 +59,35 @@ class WebScraper:
             exit(1)
 
     def search_available_titles(self, q: str = None) -> str:
-        pass
+        raise NotImplementedError()
 
     def results(self, data: str) -> list:
         raise NotImplementedError()
 
     def download_or_play_tv_show(self, t: list, state: str = "d" or "p"):
-        pass
+        raise NotImplementedError()
 
     def download_or_play_movie(self, m: list, state: str = "d" or "p"):
-        pass
+        raise NotImplementedError()
 
-    def send_search_request(self, q: str = None):
-        return self.results(self.search_available_titles(q))
+    def send_search_request(self):
+        return self.results(self.search_available_titles())
 
-    def display(self):
-        titles_available = self.send_search_request()
-        for show_count, title_data in enumerate(titles_available, start=1):
-            print(f"[{show_count}] {title_data[self.title_index]} {title_data[self.show_type_index]}\n")
+    def display(self) -> None:
+        titles_available_data = self.send_search_request()
+        for show_index, title_data in enumerate(titles_available_data, start=1):
+            print(f"[{show_index}] {title_data[self.title_index]} {title_data[self.show_type_index]}\n")
         print("[q] Exit!\n"
               "[d] Download!\n")
         choice = None
-        while choice not in range(len(titles_available) + 1):
+        while choice not in range(len(titles_available_data) + 1):
             choice = input("Enter your choice: ")
             if choice == "q":
                 exit(1)
             elif choice == "d":
                 try:
                     show_to_download_index = int(input("[!] Please enter the number of the movie you want to download: ")) - 1
-                    show_to_download_data = titles_available[show_to_download_index]
+                    show_to_download_data = titles_available_data[show_to_download_index]
                     if show_to_download_data[self.show_type_index] == "TV":
                         self.download_or_play_tv_show(show_to_download_data, "d")
                     else:

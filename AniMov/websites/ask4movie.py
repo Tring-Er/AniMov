@@ -24,7 +24,7 @@ class Ask4Movie(WebScraper):
         return q.replace(" ", "+")  
     
     def results(self, q):
-        response = self.client.get(f"{self.base_url}/?s={q}")
+        response = self.http_client.get(f"{self.base_url}/?s={q}")
         soup = BS(response.text, "lxml")
         result = soup.findAll("div", {"class": "item"})
 
@@ -42,7 +42,7 @@ class Ask4Movie(WebScraper):
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
     def get_link(self, url: str):
-        response = self.client.get(url).text
+        response = self.http_client.get(url).text
         regs = re.findall("""dir['"],['"]([^"']*)""", response)[0]
         txt = base64.b64decode(regs)
         txt = txt.decode("utf-8")
@@ -53,7 +53,7 @@ class Ask4Movie(WebScraper):
 
     def ask_direct_season(self, show_url):
         res_link = self.get_link(show_url)
-        response = self.client.get(f"https://cinegrabber.com/p/{res_link}").text
+        response = self.http_client.get(f"https://cinegrabber.com/p/{res_link}").text
         soup = BS(response, "lxml")
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})
@@ -64,7 +64,7 @@ class Ask4Movie(WebScraper):
         return url, season, episode
 
     def ask_season(self, show_url: str):
-        response = self.client.get(show_url)
+        response = self.http_client.get(show_url)
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "item"})
         season = input(
@@ -73,7 +73,7 @@ class Ask4Movie(WebScraper):
         season = seasons[len(seasons) - int(season)]
         season_link = season.find("a")["href"]
         res_link = self.get_link(season_link)
-        response_seasons = self.client.get(f"https://cinegrabber.com/p/{res_link}").text
+        response_seasons = self.http_client.get(f"https://cinegrabber.com/p/{res_link}").text
         soup = BS(response_seasons, "lxml")
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})
@@ -99,7 +99,7 @@ class Ask4Movie(WebScraper):
     
     def direct_show_download(self, t: list):
         res_link = self.get_link(t[self.url_index])
-        response = self.client.get(f"https://cinegrabber.com/p/{res_link}").text
+        response = self.http_client.get(f"https://cinegrabber.com/p/{res_link}").text
         soup = BS(response, "lxml")
         season = soup.title.text.split("┋")[1][1:]
         episodes = soup.findAll("span", {"class": "episode"})

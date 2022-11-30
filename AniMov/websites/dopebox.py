@@ -13,14 +13,14 @@ class DopeBox(Actvid):
         self.rep_key = "6LeWLCYeAAAAAL1caYzkrIY-M59Vu41vIblXQZ48"
 
     def ask(self, series_id):
-        response_series_id = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
+        response_series_id = self.http_client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
         season_ids = [
             i["data-id"] for i in BS(response_series_id, "lxml").select(".dropdown-item")
         ]
         season = input(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
         )
-        response_episodes = self.client.get(
+        response_episodes = self.http_client.get(
             f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
         )
         episodes = [i["data-id"] for i in BS(response_episodes, "lxml").select(".episode-item")]
@@ -36,7 +36,7 @@ class DopeBox(Actvid):
         return episode, season, ep
 
     def get_ep(self, url, data_id):
-        source = self.client.get(f"{url}").text
+        source = self.http_client.get(f"{url}").text
         soup = BS(source, "lxml")
 
         unformated = soup.find("div", {"data-id": f"{data_id}"})
@@ -51,12 +51,12 @@ class DopeBox(Actvid):
         return text
 
     def server_id(self, mov_id):
-        response = self.client.get(f"{self.base_url}/ajax/movie/episodes/{mov_id}")
+        response = self.http_client.get(f"{self.base_url}/ajax/movie/episodes/{mov_id}")
         soup = BS(response, "lxml")
         return [i["data-id"] for i in soup.select(".link-item")][0]
 
     def ep_server_id(self, ep_id):
-        response = self.client.get(
+        response = self.http_client.get(
             f"{self.base_url}/ajax/v2/episode/servers/{ep_id}/#servers-list"
         )
         soup = BS(response, "lxml")

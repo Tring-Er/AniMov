@@ -14,14 +14,14 @@ class Solar(Actvid):
         self.redo()
 
     def ask(self, series_id):
-        response_season = self.client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
+        response_season = self.http_client.get(f"{self.base_url}/ajax/v2/tv/seasons/{series_id}")
         season_ids = [
             i["data-id"] for i in BS(response_season, "lxml").select(".dropdown-item")
         ]
         season = input(
                 f"Please input the season number(total seasons:{len(season_ids)}): "
         )
-        response_season_ids = self.client.get(
+        response_season_ids = self.http_client.get(
             f"{self.base_url}/ajax/v2/season/episodes/{season_ids[int(season) - 1]}"
         )
         episodes = [i["data-id"] for i in BS(response_season_ids, "lxml").select(".eps-item")]
@@ -37,7 +37,7 @@ class Solar(Actvid):
         return episode, season, ep
 
     def get_ep(self, url, data_id):
-        source = self.client.get(f"{url}").text
+        source = self.http_client.get(f"{url}").text
 
         soup = BS(source, "lxml")
 

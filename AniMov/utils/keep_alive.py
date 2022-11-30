@@ -1,19 +1,17 @@
-import time
+from time import sleep
 
-from .httpclient import HttpClient
+from AniMov.utils.httpclient import HttpClient
 
 
-class KP:
-    def __init__(self, website: str, time: int = 120):
-        self.client = HttpClient()
-        self.time = time
-        self.website = website
+class Pinger:
+    """Pings the server"""
 
-    def ping(self, website: str = None, headers: dict = None):
-        if not website:
-            website = self.website
+    def __init__(self, ping_frequency: int = 120):
+        self.http_client = HttpClient()
+        self.ping_frequency = ping_frequency
+
+    def ping(self, link: str, request_headers: dict = None):
         while True:
-            self.client.set_headers(headers)
-            response = self.client.get(website)
-            print(response.text)
-            time.sleep(self.time)
+            self.http_client.set_headers(request_headers)
+            self.http_client.get(link)
+            sleep(self.ping_frequency)

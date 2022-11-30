@@ -20,7 +20,7 @@ class Trailers(WebScraper):
         return q.replace(" ", "+")
 
     def results(self, q: str) -> list:
-        response = self.client.get(f"https://trailers.to/en/popular/movies-tvshows-collections?q={q}").text
+        response = self.http_client.get(f"https://trailers.to/en/popular/movies-tvshows-collections?q={q}").text
         soup = BS(response, "lxml")
         lis = soup.findAll("article", {"class": "tour-modern list-item"})
         ids = [lis[i].find("a")["href"].split("/")[2] for i in range(len(lis))]
@@ -32,7 +32,7 @@ class Trailers(WebScraper):
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
     def ask(self, url: str):
-        response = self.client.get(f"https://trailers.to{url}").text
+        response = self.http_client.get(f"https://trailers.to{url}").text
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "collapse"})
         season = input(
@@ -45,25 +45,25 @@ class Trailers(WebScraper):
         return season, episode
 
     def shows_cdn_url(self, season, episode, link):
-        response = self.client.get(f"https://trailers.to{link}").text
+        response = self.http_client.get(f"https://trailers.to{link}").text
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "collapse"})[int(season) - 1]
         episode = seasons.findAll("article", {"class": "tour-modern"})[int(episode) - 1].find("a")["href"]
-        res = self.client.get(f"https://trailers.to{episode}").text
+        res = self.http_client.get(f"https://trailers.to{episode}").text
         soup = BS(res, "lxml")
         url = soup.find("a", {"id": "download-button"})["href"]
         print(url)
         return url
 
     def mov_cdn_url(self, link):
-        response = self.client.get(f"https://trailers.to{link}").text
+        response = self.http_client.get(f"https://trailers.to{link}").text
         soup = BS(response, "lxml")
         url = soup.find("a", {"id": "download-button"})["href"]
         print(url)
         return url
 
     def show_download(self, t):
-        response = self.client.get(f"https://trailers.to{t[self.url_index]}").text
+        response = self.http_client.get(f"https://trailers.to{t[self.url_index]}").text
         soup = BS(response, "lxml")
         seasons = soup.findAll("div", {"class": "collapse"})
         for season in range(len(seasons)):

@@ -22,7 +22,7 @@ class KimCartoon(WebScraper):
         return q
     
     def results(self, q):
-        response = self.client.post(f"{self.base_url}/Search/Cartoon", data={"keyword": q})
+        response = self.http_client.post(f"{self.base_url}/Search/Cartoon", data={"keyword": q})
         soup = BS(response.text, "lxml")
         div = soup.find("div", {"class": "list-cartoon"})
         cartoons = div.findAll("div", {"class": "item"})
@@ -33,7 +33,7 @@ class KimCartoon(WebScraper):
         return [list(sublist) for sublist in zip(title, urls, ids, mov_or_tv)]
 
     def ask(self, url):
-        response = self.client.get(self.base_url + url)
+        response = self.http_client.get(self.base_url + url)
         soup = BS(response, "lxml")
         table = soup.find("table", {"class": "listing"})
         episodes = table.findAll("a", {"rel": "noreferrer noopener"})
@@ -46,7 +46,7 @@ class KimCartoon(WebScraper):
         return url, episode
     
     def download_show(self, t: list):
-        response = self.client.get(self.base_url + t[self.url_index])
+        response = self.http_client.get(self.base_url + t[self.url_index])
         soup = BS(response, "lxml")
         table = soup.find("table", {"class": "listing"})
         episodes = table.findAll("a", {"rel": "noreferrer noopener"})
@@ -57,13 +57,13 @@ class KimCartoon(WebScraper):
             self.download_show(url, t[self.title_index], episode=e + 1)
     
     def cdn_url(self, url):
-        response = self.client.get(self.base_url + url).text
+        response = self.http_client.get(self.base_url + url).text
         iframe_id = re.findall('''src="https://www.luxubu.review/v/(.*?)"''', response)[0]
-        response_post = self.client.post(f"https://www.luxubu.review/api/source/{iframe_id}", data=None).json()['data']
+        response_post = self.http_client.post(f"https://www.luxubu.review/api/source/{iframe_id}", data=None).json()['data']
         return response_post[-1]["file"]
     
     def mov_table(self, url):
-        response = self.client.get(self.base_url + url)
+        response = self.http_client.get(self.base_url + url)
         soup = BS(response, "lxml")
         table = soup.find("table", {"class": "listing"})
         url = table.findAll("a", {"rel": "noreferrer noopener"})[0]["href"]

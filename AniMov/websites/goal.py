@@ -14,10 +14,10 @@ class Goal9(WebScraper):
         return q
 
     def results(self, q):
-        data_id = self.client.get("https://justameanlessdomain.com/v1/match/related").json()["data"][0]["id"]
-        response = self.client.get(f"https://justameanlessdomain.com/v1/match/{data_id}").json()
+        data_id = self.http_client.get("https://justameanlessdomain.com/v1/match/related").json()["data"][0]["id"]
+        response = self.http_client.get(f"https://justameanlessdomain.com/v1/match/{data_id}").json()
         name = response["data"]["name"]
-        stream_data = self.client.get(f"https://justameanlessdomain.com/v1/match/{data_id}/stream").json()
+        stream_data = self.http_client.get(f"https://justameanlessdomain.com/v1/match/{data_id}/stream").json()
         streams = stream_data["data"]["play_urls"]
         urls = [streams[i]["url"] for i in range(len(streams))]
         title = [streams[i]["name"] for i in range(len(streams))]
