@@ -15,20 +15,19 @@ from AniMov.websites.solar import Solar
 from AniMov.websites.goal import Goal9
 from AniMov.utils.onstartup import get_key
 
-
-DEFAULT_PROVIDER = "theflix"
+DEFAULT_PROVIDER = 1
 PROVIDER_OPTIONS = {
-    "theflix": TheFlix,
-    "vidsrc": VidSrc,
-    "eja": Eja,
-    "ask4movie": Ask4Movie,
-    "ustvgo": Ustvgo,
-    "kimcartoon": KimCartoon,
-    "actvid": Actvid,
-    "sflix": Sflix,
-    "solar": Solar,
-    "dopebox": DopeBox,
-    "9goal": Goal9,
+    1: [TheFlix, "https://theflix.to"],
+    2: [VidSrc, "https://v2.vidsrc.me"],
+    3: [Eja, "https://eja.tv"],
+    4: [Ask4Movie, "https://ask4movie.mx"],
+    5: [Ustvgo, "https://ustvgo.tv"],
+    6: [KimCartoon, "https://kimcartoon.li"],
+    7: [Actvid, "https://www.actvid.com"],
+    8: [Sflix, "https://sflix.se"],
+    9: [Solar, "https://solarmovie.pe"],
+    10: [DopeBox, "https://dopebox.to"],
+    11: [Goal9, "https://9goal.tv/"],
 }
 
 
@@ -59,15 +58,22 @@ The name of the provider """
 
     get_key()
 
-    selected_provider = input(initial_message)
-    try:
-        provider = PROVIDER_OPTIONS.get(selected_provider, PROVIDER_OPTIONS[DEFAULT_PROVIDER])
-        provider_object: WebScraper = provider()
-        provider_object.redo(None, None)
-    except UnicodeDecodeError as e:
-        print("The Current Provider has changed", e)
-    except Exception as e:
-        print("[!] An error has occurred | ", e)
+
+    while True:
+        try:
+            print(f"Current provider: {calls[current_provider][1]}")
+            provider_data = calls.get(current_provider, calls[current_provider])
+            provider: WebScraper = provider_data[0](provider_data[1])
+            provider.redo()
+            break
+        except UnicodeDecodeError as e:
+            print("The Current Provider has changed", e)
+        except Exception as e:
+            print("[!] An error has occurred | ", e)
+            user_choice = input("Switch to another provider? (y or n): ")
+            if user_choice == "n":
+                return
+            current_provider += 1
 
 
 if __name__ == '__main__':
