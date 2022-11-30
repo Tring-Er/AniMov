@@ -3,7 +3,6 @@ import platform
 
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.websites.theflix import TheFlix
-from AniMov.websites.eja import Eja
 from AniMov.websites.ask4movie import Ask4Movie
 from AniMov.websites.ustvgo import Ustvgo
 from AniMov.websites.kimcartoon import KimCartoon
