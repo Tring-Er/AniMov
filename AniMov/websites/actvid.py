@@ -19,8 +19,11 @@ x: Callable[[Any], str] = (
 )
 
 
+BASE_URL = "https://www.actvid.com"
+
+
 class Actvid(WebScraper):
-    def __init__(self, base_url) -> None:
+    def __init__(self, base_url=BASE_URL) -> None:
         super().__init__(base_url)
         self.userinput = None
         self.base_url = base_url

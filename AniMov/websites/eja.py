@@ -5,8 +5,11 @@ from bs4 import BeautifulSoup as BS
 from AniMov.elements.WebScraper import WebScraper
 
 
+BASE_URL = "https://eja.tv"
+
+
 class Eja(WebScraper):
-    def __init__(self, base_url):
+    def __init__(self, base_url=BASE_URL):
         super().__init__(base_url)
         self.base_url = base_url
         self.headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; rv:80.0) Gecko/20100101 Firefox/80.0"}

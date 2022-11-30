@@ -1,8 +1,6 @@
-import logging
-import os
-import re
-import subprocess
-import sys
+from os import getcwd
+from subprocess import Popen
+from sys import exit
 
 
 from AniMov.utils.httpclient import HttpClient
@@ -14,17 +12,16 @@ class WebScraper:
         self.client = HttpClient()
         self.base_url = base_url
         self.title, self.url, self.aid, self.mv_tv = 0, 1, 2, 3
-        pass
 
     @staticmethod
     def parse(txt: str) -> str:
-        return re.sub(r"\W+", "-", txt.lower())
+        return txt.lower().replace(" ", "-")
 
     def download(
             self, url: str, name: str, subtitle: str = None, season=None, episode=None
     ):
         name = self.parse(name)
-        fixname = re.sub(r"-+", " ", name)
+        fixname = name.replace("-", " ")
         if season or episode is None:
             pass
         else:
@@ -52,10 +49,10 @@ class WebScraper:
             args.extend(
                 ["-vf", f"subtitle={subtitle}", f"{fixname}.mp4"]
             )
-        ffmpeg_process = subprocess.Popen(args)
+        ffmpeg_process = Popen(args)
         ffmpeg_process.wait()
 
-        return print(f"Downloaded at {os.getcwd()}")
+        return print(f"Downloaded at {getcwd()}")
 
     def play(self, url: str, name: str):
         try:
@@ -68,7 +65,7 @@ class WebScraper:
                     "--no-terminal",
                 ]
 
-                mpv_process = subprocess.Popen(
+                mpv_process = Popen(
                     args
                 )
                 mpv_process.wait()
@@ -80,14 +77,13 @@ class WebScraper:
                     f"--meta-title=mov-cli{name}",
                     "--no-terminal",
                 ]
-                vlc_process = subprocess.Popen(
+                vlc_process = Popen(
                     args
                 )
                 vlc_process.wait()
         except Exception as e:
-            txt = f"[!]Could not play {name}: MPV or VLC not found | {e}"
-            logging.log(logging.ERROR, txt)
-            sys.exit(1)
+            print(f"[!]Could not play {name}: MPV or VLC not found | {e}")
+            exit(1)
 
     def search(self, q: str = None) -> str:
         pass
@@ -105,6 +101,7 @@ class WebScraper:
         return self.results(self.search(q))
 
     def display(self, q: str = None, result_no: int = None):
+
         import AniMov.main as ani_mov
         result = self.sand_r(q)
         for ix, vl in enumerate(result):
@@ -122,7 +119,7 @@ class WebScraper:
                 input("Enter your choice: ") if not result_no else result_no
             )
             if choice == "q":
-                sys.exit()
+                exit(1)
             elif choice == "s":
                 return self.redo()
             elif choice == "p":
@@ -146,13 +143,13 @@ class WebScraper:
                         f"[!]  Invalid Choice Entered! | ",
                         str(e),
                     )
-                    sys.exit(1)
+                    exit(1)
                 except IndexError as e:
                     print(
                         f"[!]  This Episode is coming soon! | ",
                         str(e),
                     )
-                    sys.exit(2)
+                    exit(1)
             elif choice == "sd":
                 try:
                     mov_or_tv = result[
@@ -172,13 +169,13 @@ class WebScraper:
                         f"[!]  Invalid Choice Entered! | ",
                         str(e),
                     )
-                    sys.exit(1)
+                    exit(1)
                 except IndexError as e:
                     print(
                         f"[!]  This Episode is coming soon! | ",
                         str(e),
                     )
-                    sys.exit(2)
+                    exit(1)
             else:
                 mov_or_tv = result[int(choice) - 1]
                 if mov_or_tv[self.mv_tv] == "TV":
