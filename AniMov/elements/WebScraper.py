@@ -15,7 +15,7 @@ class WebScraper:
 
     @staticmethod
     def parse(txt: str) -> str:
-        return txt.lower().replace(" ", "-")
+        raise NotImplementedError()
 
     def download_show(self, cnd_url: str, formatted_show_data: str, subtitle: str = None, season=None, episode=None) -> None:
         another_formatted_show_data = self.parse(formatted_show_data).replace("-", " ")
@@ -55,12 +55,6 @@ class WebScraper:
             print(f"[!]Could not play {show_formatted_data}: MPV not found")
             exit(1)
 
-    def search_available_titles(self, q: str = None) -> str:
-        raise NotImplementedError()
-
-    def results(self, data: str) -> list:
-        raise NotImplementedError()
-
     def download_or_play_tv_show(self, t: Show, state: str = "d" or "p"):
         raise NotImplementedError()
 
@@ -68,7 +62,7 @@ class WebScraper:
         raise NotImplementedError()
 
     def send_search_request(self):
-        return self.results(self.search_available_titles())
+        raise NotImplementedError()
 
     def run(self) -> None:
         titles_available_data: list[Show] = self.send_search_request()

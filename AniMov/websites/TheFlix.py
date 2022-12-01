@@ -1,5 +1,4 @@
 from sys import exit
-from re import sub
 import json
 from httpx import post
 
@@ -17,18 +16,14 @@ class TheFlix(WebScraper):
         super().__init__(BASE_URL)
         self.cookies = self.create_cookies()
 
-    #  TODO To understand what this does precisely
-    def parse(self, text: str):  # text = "This is a TEST"
-        first_letter_lowercase = text[0].lower()  # first_letter_lowercase = t
-        list_garbage = []  # his is a  T E S T
-        for i in text[1:]:  # in "his is a TEST"
-            if i.isupper():
-                list_garbage.append(f" {i}")
+    def parse(self, text: str) -> str:
+        parsed_text = text[0].lower()
+        for char in text[1:]:
+            if char.isupper() and parsed_text[-1] != " ":
+                parsed_text += f" {char.lower()}"
             else:
-                list_garbage.append(i)
-        garbage = ''.join(list_garbage).lower().rstrip('.')  # "his is a  t e s t"
-        name = f"{first_letter_lowercase}{garbage}"  # "this is a  t e s t
-        return sub("\W+", "-", name)  # "this-is-a--t-e-s-t
+                parsed_text += char.lower()
+        return parsed_text.replace(" ", "-")
 
     def create_cookies(self):
         url_query = {"affiliateCode": "", "pathname": "/"}
