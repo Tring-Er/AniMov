@@ -1,12 +1,13 @@
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.websites.TheFlix import TheFlix
+from AniMov.utils.HttpClient import HttpClient
 
 PROVIDER_OPTIONS = [TheFlix]
 
 
 def ani_mov():
     for provider in PROVIDER_OPTIONS:
-        provider_object: WebScraper = provider()
+        provider_object: WebScraper = provider(HttpClient())
         try:
             provider_object.run()
             break

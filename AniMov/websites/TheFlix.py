@@ -1,19 +1,19 @@
 from sys import exit
 import json
-from httpx import post
 
 from bs4 import BeautifulSoup
 
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.elements.Show import Show
+from AniMov.utils.HttpClient import HttpClient
 
 BASE_URL = "https://theflix.to"
 
 
 class TheFlix(WebScraper):
 
-    def __init__(self):
-        super().__init__(BASE_URL)
+    def __init__(self, http_client: HttpClient):
+        super().__init__(BASE_URL, http_client)
         self.cookies = self.create_cookies()
 
     def parse(self, text: str) -> str:
@@ -27,7 +27,8 @@ class TheFlix(WebScraper):
 
     def create_cookies(self):
         url_query = {"affiliateCode": "", "pathname": "/"}
-        return post("https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing", data=url_query).headers["Set-Cookie"]
+        response = self.http_client.post("https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing", url_query)
+        return response.headers["Set-Cookie"]
 
     def get_tv_shows(self, show_title: str) -> list[Show]:
         tv_shows = []
@@ -103,15 +104,14 @@ class TheFlix(WebScraper):
         return data
 
     def get_trending_movies(self) -> list[Show]:
-
         trending_movie_shows = []
         tv_shows_response = self.http_client.get(f"https://theflix.to/movies/trending")
         tv_shows_json = BeautifulSoup(tv_shows_response, "lxml", ).select("#__NEXT_DATA__")[0].text
         tv_shows_data = json.loads(tv_shows_json)["props"]["pageProps"]["mainList"]["docs"]
-        for i in tv_shows_data:
-            if i["available"]:
-                show_title = self.parse(i["name"])
-                show_id = i["id"]
+        for movies_data in tv_shows_data:
+            if movies_data["available"]:
+                show_title = self.parse(movies_data["name"])
+                show_id = movies_data["id"]
                 show_type = "MOVIE"
                 trending_movie_shows.append(Show(show_title, show_id, show_type))
         return trending_movie_shows
@@ -152,7 +152,8 @@ class TheFlix(WebScraper):
     def get_season_info(self, total_number_of_seasons: int, show_id, show_title, cookies: str):
         selected_season = input(f"Please input the season number(total seasons:{total_number_of_seasons}): ")
         self.http_client.set_headers({"cookie": cookies})
-        number_of_episodes_in_the_season = json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-1"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["numberOfEpisodes"]
+        response = self.http_client.get(f"https://theflix.to/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-1")
+        number_of_episodes_in_the_season = json.loads(BeautifulSoup(response, "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["numberOfEpisodes"]
         episode = input(f"Please input the episode number: ")
         return selected_season, number_of_episodes_in_the_season, episode
 

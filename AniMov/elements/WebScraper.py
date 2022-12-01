@@ -2,15 +2,14 @@ from os import getcwd
 from subprocess import Popen
 from sys import exit
 
-
 from AniMov.utils.HttpClient import HttpClient
 from AniMov.elements.Show import Show
 
 
 class WebScraper:
 
-    def __init__(self, base_url: str) -> None:
-        self.http_client = HttpClient()
+    def __init__(self, base_url: str, http_client: HttpClient) -> None:
+        self.http_client = http_client
         self.base_url = base_url
 
     @staticmethod
