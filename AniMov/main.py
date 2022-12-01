@@ -8,7 +8,7 @@ def ani_mov():
     for provider in PROVIDER_OPTIONS:
         provider_object: WebScraper = provider()
         try:
-            provider_object.redo()
+            provider_object.run()
             break
         except UnicodeDecodeError as e:
             print("The Current Provider has changed", e)

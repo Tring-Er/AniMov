@@ -6,6 +6,7 @@ from httpx import post
 from bs4 import BeautifulSoup
 
 from AniMov.elements.WebScraper import WebScraper
+from AniMov.elements.Show import Show
 
 BASE_URL = "https://theflix.to"
 
@@ -15,10 +16,6 @@ class TheFlix(WebScraper):
     def __init__(self):
         super().__init__(BASE_URL)
         self.cookies = self.create_cookies()
-        self.show_id_index = 1
-        self.m_available_garbage = -3
-        self.t_available_garbage = -2
-        self.total_number_of_seasons_index = 4
 
     #  TODO To understand what this does precisely
     def parse(self, text: str):  # text = "This is a TEST"
@@ -37,13 +34,34 @@ class TheFlix(WebScraper):
         url_query = {"affiliateCode": "", "pathname": "/"}
         return post("https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing", data=url_query).headers["Set-Cookie"]
 
-    def create_junk_list_1(self, show_title: str) -> list:
-        return [[self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/tv-shows/trending?search={show_title}"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+    def get_tv_shows(self, show_title: str) -> list[Show]:
+        tv_shows = []
+        shows_list_response = self.http_client.get(f"https://theflix.to/tv-shows/trending?search={show_title}")
+        show_list_json = BeautifulSoup(shows_list_response, "lxml").select("#__NEXT_DATA__")[0].text
+        show_list_data = json.loads(show_list_json)["props"]["pageProps"]["mainList"]["docs"]
+        for show_data in show_list_data:
+            if show_data["available"]:
+                show_title = self.parse(show_data["name"])
+                show_id = show_data["id"]
+                show_type = "TV"
+                number_of_seasons = show_data["numberOfSeasons"]
+                tv_shows.append(Show(show_title, show_id, show_type, number_of_seasons))
+        return tv_shows
 
-    def create_junk_list_2(self, show_title: str) -> list:
-        return [[self.parse(i["name"]), i["id"], i["available"], "MOVIE"] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/movies/trending?search={show_title.replace(' ', '+')}"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+    def get_movie_shows(self, show_title: str) -> list[Show]:
+        movie_shows = []
+        movies_list_response = self.http_client.get(f"https://theflix.to/movies/trending?search={show_title.replace(' ', '+')}")
+        movies_list_json = BeautifulSoup(movies_list_response, "lxml", ).select("#__NEXT_DATA__")[0].text
+        movie_list_data = json.loads(movies_list_json)["props"]["pageProps"]["mainList"]["docs"]
+        for show_data in movie_list_data:
+            if show_data["available"]:
+                show_title = self.parse(show_data["name"])
+                show_id = show_data["id"]
+                show_type = "MOVIE"
+                movie_shows.append(Show(show_title, show_id, show_type))
+        return movie_shows
 
-    def search_available_titles(self) -> list[list]:
+    def search_available_titles(self) -> list[Show]:
         print("[s] Search\n"
               "[ts] Trending TV Shows\n"
               "[tm] Trending Movies\n"
@@ -51,10 +69,10 @@ class TheFlix(WebScraper):
         option_choice = input("Enter your choice: ").lower()
         if option_choice == "s":
             show_title = input("[!] Please Enter the name of a Movie or TV Show: ")
-            data = []
-            for j in self.create_junk_list_1(show_title):
+            data: list[Show] = []
+            for j in self.get_tv_shows(show_title):
                 data.append(j)
-            for k in self.create_junk_list_2(show_title):
+            for k in self.get_movie_shows(show_title):
                 data.append(k)
             if len(data) == 0:
                 print("No Results found", "Bye!")
@@ -69,25 +87,47 @@ class TheFlix(WebScraper):
             print("Bye!")
             exit(1)
 
-    def create_junk_list_3(self) -> list:
-        return [[self.parse(i["name"]), i["id"], i["available"], "TV", i["numberOfSeasons"]] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/tv-shows/trending"), "lxml", ).select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+    def get_trending_tv_shows(self) -> list[Show]:
+        trending_tv_shows = []
+        tv_shows_response = self.http_client.get(f"https://theflix.to/tv-shows/trending")
+        tv_shows_json = BeautifulSoup(tv_shows_response, "lxml", ).select("#__NEXT_DATA__")[0].text
+        tv_shows_data = json.loads(tv_shows_json)["props"]["pageProps"]["mainList"]["docs"]
+        for show_data in tv_shows_data:
+            if show_data["available"]:
+                show_title = self.parse(show_data["name"])
+                show_id = show_data["id"]
+                show_type = "TV"
+                number_of_seasons = show_data["numberOfSeasons"]
+                trending_tv_shows.append(Show(show_title, show_id, show_type, number_of_seasons))
+        return trending_tv_shows
 
-    def trending_tv_shows(self):
+    def trending_tv_shows(self) -> list[Show]:
         data = []
-        for j in self.create_junk_list_3():
+        for j in self.get_trending_tv_shows():
             data.append(j)
         return data
 
-    def create_junk_list_4(self) -> list:
-        return [[self.parse(i["name"]), i["id"], "MOVIE", i["available"]] for i in json.loads(BeautifulSoup(self.http_client.get(f"https://theflix.to/movies/trending"), "lxml").select("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["mainList"]["docs"] if i["available"]]
+    def get_trending_movies(self) -> list[Show]:
 
-    def trending_movies(self):
+        trending_movie_shows = []
+        tv_shows_response = self.http_client.get(f"https://theflix.to/movies/trending")
+        tv_shows_json = BeautifulSoup(tv_shows_response, "lxml", ).select("#__NEXT_DATA__")[0].text
+        tv_shows_data = json.loads(tv_shows_json)["props"]["pageProps"]["mainList"]["docs"]
+        for i in tv_shows_data:
+            if i["available"]:
+                show_title = self.parse(i["name"])
+                show_id = i["id"]
+                show_type = "MOVIE"
+                trending_movie_shows.append(Show(show_title, show_id, show_type))
+        return trending_movie_shows
+
+    def trending_movies(self) -> list[Show]:
         data = []
-        for k in self.create_junk_list_4():
+        for k in self.get_trending_movies():
             data.append(k)
         return data
 
-    def create_movie_url(self, show_title: str, show_id: str) -> str:
+    def create_movie_url(self, show_title: str, show_id: int) -> str:
         return f"{self.base_url}/movie/{show_id}-{show_title}"
 
     def get_url_and_formatted_data(self, show_title, show_id, selected_season, selected_episode) -> tuple[str, str]:
@@ -121,12 +161,12 @@ class TheFlix(WebScraper):
         episode = input(f"Please input the episode number: ")
         return selected_season, number_of_episodes_in_the_season, episode
 
-    def send_search_request(self) -> list[list]:
+    def send_search_request(self) -> list[Show]:
         return self.search_available_titles()
 
-    def download_or_play_movie(self, show_data: list, state: str = "d" or "p") -> None:
-        show_title = show_data[self.title_index]
-        show_id = show_data[1]
+    def download_or_play_movie(self, show: Show, state: str = "d" or "p") -> None:
+        show_title = show.title
+        show_id = show.show_id
         show_url = self.create_movie_url(show_title, show_id)
         cdn_url = self.get_show_cnd_url(show_url, self.cookies)
         if state == "d":
@@ -134,10 +174,10 @@ class TheFlix(WebScraper):
         else:
             self.play_show(cdn_url, show_title)
 
-    def download_or_play_tv_show(self, show_data: list, state: str = "d" or "p") -> None:
-        formatted_show_data = show_data[self.title_index]
-        total_number_of_seasons = show_data[self.total_number_of_seasons_index]
-        show_id = show_data[self.show_id_index]
+    def download_or_play_tv_show(self, show: Show, state: str = "d" or "p") -> None:
+        formatted_show_data = show.title
+        total_number_of_seasons = show.number_of_seasons
+        show_id = show.show_id
         selected_season, total_number_of_episodes, selected_episode = self.get_season_info(total_number_of_seasons, show_id, formatted_show_data, self.cookies)
         url, formatted_show_data = self.get_url_and_formatted_data(formatted_show_data, show_id, selected_season, selected_episode)
         cdn_url = self.get_episode_cdn_url(url, selected_season, selected_episode, self.cookies)

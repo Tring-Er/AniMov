@@ -4,6 +4,7 @@ from sys import exit
 
 
 from AniMov.utils.HttpClient import HttpClient
+from AniMov.elements.Show import Show
 
 
 class WebScraper:
@@ -11,10 +12,6 @@ class WebScraper:
     def __init__(self, base_url: str) -> None:
         self.http_client = HttpClient()
         self.base_url = base_url
-        self.title_index = 0
-        self.url_index = 1
-        self.show_id_index = 2
-        self.show_type_index = 3
 
     @staticmethod
     def parse(txt: str) -> str:
@@ -64,19 +61,19 @@ class WebScraper:
     def results(self, data: str) -> list:
         raise NotImplementedError()
 
-    def download_or_play_tv_show(self, t: list, state: str = "d" or "p"):
+    def download_or_play_tv_show(self, t: Show, state: str = "d" or "p"):
         raise NotImplementedError()
 
-    def download_or_play_movie(self, m: list, state: str = "d" or "p"):
+    def download_or_play_movie(self, m: Show, state: str = "d" or "p"):
         raise NotImplementedError()
 
     def send_search_request(self):
         return self.results(self.search_available_titles())
 
-    def display(self) -> None:
-        titles_available_data = self.send_search_request()
-        for show_index, title_data in enumerate(titles_available_data, start=1):
-            print(f"[{show_index}] {title_data[self.title_index]} {title_data[self.show_type_index]}\n")
+    def run(self) -> None:
+        titles_available_data: list[Show] = self.send_search_request()
+        for show_index, show in enumerate(titles_available_data, start=1):
+            print(f"[{show_index}] {show.title} {show.show_type}\n")
         print("[q] Exit!\n"
               "[d] Download!\n")
         choice = None
@@ -87,11 +84,11 @@ class WebScraper:
             elif choice == "d":
                 try:
                     show_to_download_index = int(input("[!] Please enter the number of the movie you want to download: ")) - 1
-                    show_to_download_data = titles_available_data[show_to_download_index]
-                    if show_to_download_data[self.show_type_index] == "TV":
-                        self.download_or_play_tv_show(show_to_download_data, "d")
+                    show_to_download = titles_available_data[show_to_download_index]
+                    if show_to_download.show_type == "TV":
+                        self.download_or_play_tv_show(show_to_download, "d")
                     else:
-                        self.download_or_play_movie(show_to_download_data, "d")
+                        self.download_or_play_movie(show_to_download, "d")
                 except ValueError as e:
                     print(f"[!]  Invalid Choice Entered! | ", str(e))
                     exit(1)
@@ -99,11 +96,8 @@ class WebScraper:
                     print(f"[!]  This Episode is coming soon! | ", str(e))
                     exit(1)
             else:
-                selected_show_data = titles_available_data[int(choice) - 1]
-                if selected_show_data[self.show_type_index] == "TV":
-                    self.download_or_play_tv_show(selected_show_data, "p")
+                selected_show = titles_available_data[int(choice) - 1]
+                if selected_show.show_type == "TV":
+                    self.download_or_play_tv_show(selected_show, "p")
                 else:
-                    self.download_or_play_movie(selected_show_data, "p")
-
-    def redo(self):
-        self.display()
+                    self.download_or_play_movie(selected_show, "p")
