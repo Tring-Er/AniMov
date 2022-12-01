@@ -5,7 +5,9 @@ from bs4 import BeautifulSoup
 
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.elements.Show import Show
-from AniMov.utils.HttpClient import HttpClient
+from AniMov.elements.HttpClient import HttpClient
+from AniMov.interfaces.Downloaders.MediaDownloader import MediaDownloader
+from AniMov.interfaces.Players.MediaPlayer import MediaPlayer
 
 BASE_URL = "https://theflix.to"
 
@@ -125,8 +127,8 @@ class TheFlix(WebScraper):
     def create_movie_url(self, show_title: str, show_id: int) -> str:
         return f"{self.base_url}/movie/{show_id}-{show_title}"
 
-    def get_url_and_formatted_data(self, show_title, show_id, selected_season, selected_episode) -> tuple[str, str]:
-        return f"{self.base_url}/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-{selected_episode}", f"{show_title}_S_{selected_season}_EP_{selected_episode}"
+    def get_url_and_formatted_data(self, show_title, show_id, selected_season, selected_episode) -> str:
+        return f"{self.base_url}/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-{selected_episode}"
 
     def get_show_cnd_url(self, show_url: str, cookies) -> str:
         self.http_client.set_headers({"Cookie": cookies})
@@ -166,18 +168,18 @@ class TheFlix(WebScraper):
         show_url = self.create_movie_url(show_title, show_id)
         cdn_url = self.get_show_cnd_url(show_url, self.cookies)
         if state == "d":
-            self.download_show(cdn_url, show_title)
+            MediaDownloader.download_show(cdn_url, show_title)
         else:
-            self.play_show(cdn_url, show_title)
+            MediaPlayer.play_show(cdn_url, show_title, self.base_url)
 
     def download_or_play_tv_show(self, show: Show, state: str = "d" or "p") -> None:
-        formatted_show_data = show.title
+        show_title = show.title
         total_number_of_seasons = show.number_of_seasons
         show_id = show.show_id
-        selected_season, total_number_of_episodes, selected_episode = self.get_season_info(total_number_of_seasons, show_id, formatted_show_data, self.cookies)
-        url, formatted_show_data = self.get_url_and_formatted_data(formatted_show_data, show_id, selected_season, selected_episode)
+        selected_season, total_number_of_episodes, selected_episode = self.get_season_info(total_number_of_seasons, show_id, show_title, self.cookies)
+        url = self.get_url_and_formatted_data(show_title, show_id, selected_season, selected_episode)
         cdn_url = self.get_episode_cdn_url(url, selected_season, selected_episode, self.cookies)
         if state == "d":
-            self.download_show(cdn_url, formatted_show_data)
+            MediaDownloader.download_show(cdn_url, show_title)
         else:
-            self.play_show(cdn_url, formatted_show_data)
+            MediaPlayer.play_show(cdn_url, show_title, self.base_url)

@@ -1,6 +1,6 @@
 from AniMov.elements.WebScraper import WebScraper
 from AniMov.websites.TheFlix import TheFlix
-from AniMov.utils.HttpClient import HttpClient
+from AniMov.elements.HttpClient import HttpClient
 
 PROVIDER_OPTIONS = [TheFlix]
 
