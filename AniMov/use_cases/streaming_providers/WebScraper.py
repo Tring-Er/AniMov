@@ -20,11 +20,7 @@ class WebScraper:
     def download_or_play_movie(self, m: Show, state: str = "d" or "p"):
         raise NotImplementedError()
 
-    def send_search_request(self):
-        raise NotImplementedError()
-
-    def run(self) -> None:
-        titles_available_data: list[Show] = self.send_search_request()
+    def run(self, titles_available_data: list[Show]) -> None:
         for show_index, show in enumerate(titles_available_data, start=1):
             print(f"[{show_index}] {show.title} {show.show_type}\n")
         print("[q] Exit!\n"
