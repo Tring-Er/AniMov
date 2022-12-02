@@ -14,12 +14,12 @@ class HttpClient:
     def __init__(self):
         self.session = Client(timeout=10.0, headers=DEFAULT_HEADERS)
 
-    def get(self, link: str) -> Response:
+    def get_request(self, link: str) -> Response:
         response = self.session.get(link)
         self.session.headers["Referer"] = link
         return response
 
-    def post(self, link: str, query: dict) -> Response:
+    def post_request(self, link: str, query: dict) -> Response:
         response = self.session.post(link, data=query)
         self.session.headers["Referer"] = link
         return response

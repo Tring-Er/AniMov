@@ -1,9 +1,8 @@
 import json
 
-from bs4 import BeautifulSoup
-
 from AniMov.elements.Show import Show
 from AniMov.elements.HttpClient import HttpClient
+from AniMov.elements.HtmlParser import HtmlParser
 
 
 class TrendingMovies:
@@ -19,8 +18,8 @@ class TrendingMovies:
 
     def get_trending_movies(self, http_client: HttpClient) -> list[Show]:
         trending_movie_shows = []
-        tv_shows_response = http_client.get(f"https://theflix.to/movies/trending")
-        tv_shows_json = BeautifulSoup(tv_shows_response, "lxml", ).select("#__NEXT_DATA__")[0].text
+        tv_shows_response = http_client.get_request(f"https://theflix.to/movies/trending")
+        tv_shows_json = HtmlParser(tv_shows_response, "lxml", ).get("#__NEXT_DATA__")[0].text
         tv_shows_data = json.loads(tv_shows_json)["props"]["pageProps"]["mainList"]["docs"]
         for movies_data in tv_shows_data:
             if movies_data["available"]:

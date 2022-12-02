@@ -1,9 +1,8 @@
 import json
 
-from bs4 import BeautifulSoup
-
 from AniMov.elements.Show import Show
 from AniMov.elements.HttpClient import HttpClient
+from AniMov.elements.HtmlParser import HtmlParser
 
 
 class Search:
@@ -19,8 +18,8 @@ class Search:
 
     def get_tv_shows(self, show_title: str, http_client: HttpClient) -> list[Show]:
         tv_shows = []
-        shows_list_response = http_client.get(f"https://theflix.to/tv-shows/trending?search={show_title}")
-        show_list_json = BeautifulSoup(shows_list_response, "lxml").select("#__NEXT_DATA__")[0].text
+        shows_list_response = http_client.get_request(f"https://theflix.to/tv-shows/trending?search={show_title}")
+        show_list_json = HtmlParser(shows_list_response, "lxml").get("#__NEXT_DATA__")[0].text
         show_list_data = json.loads(show_list_json)["props"]["pageProps"]["mainList"]["docs"]
         for show_data in show_list_data:
             if show_data["available"]:
@@ -33,8 +32,8 @@ class Search:
 
     def get_movie_shows(self, show_title: str, http_client: HttpClient) -> list[Show]:
         movie_shows = []
-        movies_list_response = http_client.get(f"https://theflix.to/movies/trending?search={show_title.replace(' ', '+')}")
-        movies_list_json = BeautifulSoup(movies_list_response, "lxml", ).select("#__NEXT_DATA__")[0].text
+        movies_list_response = http_client.get_request(f"https://theflix.to/movies/trending?search={show_title.replace(' ', '+')}")
+        movies_list_json = HtmlParser(movies_list_response, "lxml", ).get("#__NEXT_DATA__")[0].text
         movie_list_data = json.loads(movies_list_json)["props"]["pageProps"]["mainList"]["docs"]
         for show_data in movie_list_data:
             if show_data["available"]:
