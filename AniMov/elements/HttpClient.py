@@ -1,5 +1,3 @@
-from sys import exit
-
 from httpx import Client, Response
 
 DEFAULT_HEADERS: dict = {
@@ -11,28 +9,19 @@ DEFAULT_HEADERS: dict = {
 
 
 class HttpClient:
+    """An interface for httpx library"""
 
     def __init__(self):
         self.session = Client(timeout=10.0, headers=DEFAULT_HEADERS)
 
     def get(self, link: str) -> Response:
-        try:
-            response = self.session.get(link)
-            self.session.headers["Referer"] = link
-        except Exception as e:
-            print(f"Error: {e}\n"
-                  f"Please open an issue if this is not due due to your internet connection")
-            exit(-1)
+        response = self.session.get(link)
+        self.session.headers["Referer"] = link
         return response
 
     def post(self, link: str, query: dict) -> Response:
-        try:
-            response = self.session.post(link, data=query)
-            self.session.headers["Referer"] = link
-        except Exception as e:
-            print(f"Error: {e}\n"
-                  f"Please open an issue if this is not due due to your internet connection")
-            exit(-1)
+        response = self.session.post(link, data=query)
+        self.session.headers["Referer"] = link
         return response
 
     def set_headers(self, header: dict) -> None:
