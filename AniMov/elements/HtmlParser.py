@@ -12,4 +12,4 @@ class HtmlParser:
         self.parser = BeautifulSoup(parsable_object, parse_mode)
 
     def get(self, selector: str, **kwargs) -> any:
-        self.parser.select(selector, **kwargs)
+        return self.parser.select(selector, **kwargs)
