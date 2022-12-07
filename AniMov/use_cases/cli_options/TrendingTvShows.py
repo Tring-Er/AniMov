@@ -1,6 +1,6 @@
 import json
 
-from AniMov.elements.Show import Show
+from AniMov.elements.Media import Media
 from AniMov.elements.HttpClient import HttpClient
 from AniMov.elements.HtmlParser import HtmlParser
 
@@ -16,7 +16,7 @@ class TrendingTvShows:
                 parsed_text += char.lower()
         return parsed_text.replace(" ", "-")
 
-    def get_trending_tv_shows(self, http_client: HttpClient) -> list[Show]:
+    def get_trending_tv_shows(self, http_client: HttpClient) -> list[Media]:
         trending_tv_shows = []
         tv_shows_response = http_client.get_request(f"https://theflix.to/tv-shows/trending")
         tv_shows_json = HtmlParser(tv_shows_response, "lxml", ).get("#__NEXT_DATA__")[0].text
@@ -27,10 +27,10 @@ class TrendingTvShows:
                 show_id = show_data["id"]
                 show_type = "TV"
                 number_of_seasons = show_data["numberOfSeasons"]
-                trending_tv_shows.append(Show(show_title, show_id, show_type, number_of_seasons))
+                trending_tv_shows.append(Media(show_title, show_id, show_type, number_of_seasons))
         return trending_tv_shows
 
-    def compute(self, http_client: HttpClient) -> list[Show]:
+    def compute(self, http_client: HttpClient) -> list[Media]:
         data = []
         for j in self.get_trending_tv_shows(http_client):
             data.append(j)

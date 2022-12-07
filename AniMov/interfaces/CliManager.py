@@ -1,11 +1,14 @@
-from AniMov.use_cases.streaming_providers.WebScraper import WebScraper
-from AniMov.use_cases.streaming_providers import provider_list
 from AniMov.elements.HttpClient import HttpClient
-from AniMov.elements.Show import Show
+from AniMov.elements.Media import Media
 import AniMov.use_cases.cli_options as cli_options
+from AniMov.use_cases.streaming_providers import provider_list
+from AniMov.use_cases.scraper.WebScraper import WebScraper
 
 
 class CliManager:
+
+    def __init__(self) -> None:
+        self.providers = provider_list
 
     def filter_option_result(self,
                              option: str
@@ -40,11 +43,11 @@ class CliManager:
 
     def entry_point(self) -> None:
         option_choice = self.ask_option()
-        for provider in provider_list:
-            current_provider: WebScraper = provider(HttpClient())
+        for current_provider in self.providers:
+            web_scraper: WebScraper = WebScraper(HttpClient(), current_provider())
             try:
-                titles_available_data: list[Show] = option_choice.compute(HttpClient())
-                current_provider.run(titles_available_data)
+                titles_available_data: list[Media] = option_choice.compute(HttpClient())
+                web_scraper.run(titles_available_data)
                 break
             except Exception as e:
                 print("[!] An error has occurred | ", e)

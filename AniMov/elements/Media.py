@@ -1,4 +1,4 @@
-class Show:
+class Media:
 
     def __init__(self, title: str, show_id: int, show_type: str, number_of_seasons: int = None) -> None:
         self.title = title
