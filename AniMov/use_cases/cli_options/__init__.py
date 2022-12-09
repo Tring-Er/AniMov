@@ -1,3 +1,4 @@
+from AniMov.use_cases.cli_options.Option import Option
 from AniMov.use_cases.cli_options.Search import Search
 from AniMov.use_cases.cli_options.TrendingTvShows import TrendingTvShows
 from AniMov.use_cases.cli_options.TrendingMovies import TrendingMovies
