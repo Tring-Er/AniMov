@@ -1,6 +1,6 @@
 from AniMov.elements.HttpClient import HttpClient
 from AniMov.elements.Media import Media
-import AniMov.use_cases.cli_options as cli_options
+from AniMov.use_cases.cli_options import Option, Search, TrendingTvShows, TrendingMovies, Quit
 from AniMov.use_cases.streaming_providers import provider_list
 from AniMov.use_cases.scraper.WebScraper import WebScraper
 
@@ -10,29 +10,20 @@ class CliManager:
     def __init__(self) -> None:
         self.providers = provider_list
 
-    def filter_option_result(self,
-                             option: str
-                             ) -> cli_options.Search | \
-                                  cli_options.TrendingTvShows | \
-                                  cli_options.TrendingMovies | \
-                                  cli_options.Quit:
+    def filter_option_result(self, option: str) -> Option:
         match option:
             case "s":
-                return cli_options.Search()
+                return Search()
             case "ts":
-                return cli_options.TrendingTvShows()
+                return TrendingTvShows()
             case "tm":
-                return cli_options.TrendingMovies()
+                return TrendingMovies()
             case "q":
-                return cli_options.Quit()
+                return Quit()
             case _:
                 raise ValueError(f"{option=} is not a valid option")
 
-    def ask_option(self
-                   ) -> cli_options.Search | \
-                        cli_options.TrendingTvShows | \
-                        cli_options.TrendingMovies | \
-                        cli_options.Quit:
+    def ask_option(self) -> Option:
         print("[s] Search\n"
               "[ts] Trending TV Shows\n"
               "[tm] Trending Movies\n"
