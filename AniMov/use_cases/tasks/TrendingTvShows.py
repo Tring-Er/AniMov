@@ -4,7 +4,7 @@ from AniMov.elements.Media import Media
 from AniMov.elements.HttpClient import HttpClient
 from AniMov.elements.HtmlParser import HtmlParser
 
-from AniMov.use_cases.cli_options.Option import Option
+from AniMov.use_cases.tasks.Option import Option
 
 
 class TrendingTvShows(Option):

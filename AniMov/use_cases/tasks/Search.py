@@ -3,7 +3,7 @@ import json
 from AniMov.elements.Media import Media
 from AniMov.elements.HttpClient import HttpClient
 from AniMov.elements.HtmlParser import HtmlParser
-from AniMov.use_cases.cli_options.Option import Option
+from AniMov.use_cases.tasks.Option import Option
 
 
 class Search(Option):
@@ -44,15 +44,10 @@ class Search(Option):
                 movie_shows.append(Media(show_title, show_id, show_type))
         return movie_shows
 
-    def compute(self, http_client: HttpClient) -> list[Media]:
-        show_title = input("[!] Please Enter the name of a Movie or TV Show: ")
+    def compute(self, http_client: HttpClient, show_title: str) -> list[Media]:
         data: list[Media] = []
         for j in self.get_tv_shows(show_title, http_client):
             data.append(j)
         for k in self.get_movie_shows(show_title, http_client):
             data.append(k)
-        if len(data) == 0:
-            print("No Results found", "Bye!")
-            exit(1)
-        else:
-            return data
+        return data

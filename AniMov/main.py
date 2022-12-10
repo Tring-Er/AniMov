@@ -1,4 +1,4 @@
-from AniMov.interfaces.CliManager import CliManager
+from AniMov.interfaces.Cli.CliManager import CliManager
 
 
 def main() -> None:
