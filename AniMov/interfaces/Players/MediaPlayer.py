@@ -4,7 +4,7 @@ from subprocess import Popen
 class MediaPlayer:
 
     @staticmethod
-    def play_show(url: str, show_title: str, base_url: str) -> None:
+    def play_show(url: str, show_title: str, base_url: str) -> None | Exception:
         try:
             args = ["mpv",
                     f"--referrer={base_url}",
@@ -13,6 +13,5 @@ class MediaPlayer:
                     "--no-terminal"]
             mpv_process = Popen(args)
             mpv_process.wait()
-        except ModuleNotFoundError:
-            print(f"[!]Could not play {show_title}: MPV not found")
-            exit(1)
+        except Exception as error:
+            return error

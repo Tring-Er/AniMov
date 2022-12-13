@@ -66,15 +66,16 @@ class CliManager:
                 if show_to_download.show_type == "TV":
                     selected_season = input(f"Please input the season number(total seasons:{show_to_download.number_of_seasons}): ")
                     selected_episode = input(f"Please input the episode number: ")
-                    error = self.provider_manager.download_or_play_tv_show(show_to_download, "d", selected_season, selected_episode)
+                    download_path_or_error = self.provider_manager.download_or_play_tv_show(show_to_download, "d", selected_season, selected_episode)
                 else:
-                    error = self.provider_manager.download_or_play_movie(show_to_download, "d")
-                if isinstance(error, ValueError):
+                    download_path_or_error = self.provider_manager.download_or_play_movie(show_to_download, "d")
+                if isinstance(download_path_or_error, ValueError):
                     print(f"[!]  Invalid Choice Entered! | ", str(ValueError()))
                     self.execute_option(Quit)
-                if isinstance(error, IndexError):
+                if isinstance(download_path_or_error, IndexError):
                     print(f"[!]  This Episode is coming soon! | ", str(IndexError()))
                     self.execute_option(Quit)
+                print(f"Downloaded at {download_path_or_error}")
             else:
                 try:
                     choice = int(choice)
@@ -92,10 +93,13 @@ class CliManager:
                 else:
                     error = self.provider_manager.download_or_play_movie(selected_show, "p")
                 if isinstance(error, ValueError):
-                    print(f"[!]  Invalid Choice Entered! | ", str(ValueError()))
+                    print(f"[!]  Invalid Choice Entered! | ", str(error))
                     self.execute_option(Quit)
                 if isinstance(error, IndexError):
-                    print(f"[!]  This Episode is coming soon! | ", str(IndexError()))
+                    print(f"[!]  Episode unavailable! | ", str(error))
+                    self.execute_option(Quit)
+                if isinstance(error, ModuleNotFoundError):
+                    print(f"[!]Could not play show: MPV not found")
                     self.execute_option(Quit)
 
     def entry_point(self) -> None:

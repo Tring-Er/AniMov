@@ -28,8 +28,6 @@ class ProvidersManager:
         except Exception as error:
             return error
 
-    def download_or_play_tv_show(self, show: Media, mode: str, selected_season: str, selected_episode: str) -> None | Exception:
-        try:
-            self.web_scraper.download_or_play_tv_show(show, selected_season, selected_episode, mode)
-        except Exception as error:
-            return error
+    def download_or_play_tv_show(self, show: Media, mode: str, selected_season: str, selected_episode: str) -> None | str | Exception:
+        error = self.web_scraper.download_or_play_tv_show(show, selected_season, selected_episode, mode)
+        return error

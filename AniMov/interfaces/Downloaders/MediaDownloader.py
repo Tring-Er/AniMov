@@ -5,7 +5,7 @@ from subprocess import Popen
 class MediaDownloader:
 
     @staticmethod
-    def download_show(cnd_url: str, file_name: str) -> None:
+    def download_show(cnd_url: str, file_name: str) -> str:
         ffmpeg_args = ['ffmpeg',
                        '-n',
                        '-thread_queue_size',
@@ -23,4 +23,4 @@ class MediaDownloader:
                        f'{file_name}.mp4']
         ffmpeg_process = Popen(ffmpeg_args)
         ffmpeg_process.wait()
-        print(f"Downloaded at {getcwd()}")
+        return getcwd()
