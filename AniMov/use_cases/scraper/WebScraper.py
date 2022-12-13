@@ -16,7 +16,7 @@ class WebScraper:
         self.provider = provider
         self.cookies = self.create_cookies()
 
-    def create_cookies(self):
+    def create_cookies(self) -> str:
         url_query = {"affiliateCode": "", "pathname": "/"}
         response = self.http_client.post_request("https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing", url_query)
         return response.headers["Set-Cookie"]
@@ -42,14 +42,6 @@ class WebScraper:
         cdn_url = self.http_client.get_request(f"https://theflix.to:5679/tv/videos/{episode_id}/request-access?contentUsageType=Viewing").json()["url"]
         return cdn_url
 
-    def get_season_info(self, total_number_of_seasons: int, show_id, show_title, cookies: str):
-        selected_season = input(f"Please input the season number(total seasons:{total_number_of_seasons}): ")
-        self.http_client.set_headers({"cookie": cookies})
-        response = self.http_client.get_request(f"https://theflix.to/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-1")
-        number_of_episodes_in_the_season = json.loads(HtmlParser(response, "lxml").get("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["numberOfEpisodes"]
-        episode = input(f"Please input the episode number: ")
-        return selected_season, number_of_episodes_in_the_season, episode
-
     def download_or_play_movie(self, show: Media, state: str = "d" or "p") -> None:
         show_title = show.title
         show_id = show.show_id
@@ -60,14 +52,10 @@ class WebScraper:
         else:
             MediaPlayer.play_show(cdn_url, show_title, self.provider.base_url)
 
-    def download_or_play_tv_show(self, show: Media, state: str = "d" or "p") -> None:
-        show_title = show.title
-        total_number_of_seasons = show.number_of_seasons
-        show_id = show.show_id
-        selected_season, total_number_of_episodes, selected_episode = self.get_season_info(total_number_of_seasons, show_id, show_title, self.cookies)
-        url = self.provider.get_tv_show_url(show_title, show_id, selected_season, selected_episode)
+    def download_or_play_tv_show(self, show: Media, selected_season: str, selected_episode: str, state: str = "d" or "p") -> None:
+        url = self.provider.get_tv_show_url(show.title, show.show_id, selected_season, selected_episode)
         cdn_url = self.get_episode_cdn_url(url, selected_season, selected_episode, self.cookies)
         if state == "d":
-            MediaDownloader.download_show(cdn_url, show_title)
+            MediaDownloader.download_show(cdn_url, show.title)
         else:
-            MediaPlayer.play_show(cdn_url, show_title, self.provider.base_url)
+            MediaPlayer.play_show(cdn_url, show.title, self.provider.base_url)

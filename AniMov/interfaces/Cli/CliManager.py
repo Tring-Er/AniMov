@@ -63,7 +63,12 @@ class CliManager:
                 show_to_download_index = int(
                     input("[!] Please enter the number of the movie you want to download: ")) - 1
                 show_to_download = available_titles_data[show_to_download_index]
-                error = self.provider_manager.download_or_play_show(show_to_download, "d")
+                if show_to_download.show_type == "TV":
+                    selected_season = input(f"Please input the season number(total seasons:{show_to_download.number_of_seasons}): ")
+                    selected_episode = input(f"Please input the episode number: ")
+                    error = self.provider_manager.download_or_play_tv_show(show_to_download, "d", selected_season, selected_episode)
+                else:
+                    error = self.provider_manager.download_or_play_movie(show_to_download, "d")
                 if isinstance(error, ValueError):
                     print(f"[!]  Invalid Choice Entered! | ", str(ValueError()))
                     self.execute_option(Quit)
@@ -80,7 +85,12 @@ class CliManager:
                     print("[!] Invalid option")
                     continue
                 selected_show = available_titles_data[int(choice) - 1]
-                error = self.provider_manager.download_or_play_show(selected_show, "p")
+                if selected_show.show_type == "TV":
+                    selected_season = input(f"Please input the season number(total seasons:{selected_show.number_of_seasons}): ")
+                    selected_episode = input(f"Please input the episode number: ")
+                    error = self.provider_manager.download_or_play_tv_show(selected_show, "p", selected_season, selected_episode)
+                else:
+                    error = self.provider_manager.download_or_play_movie(selected_show, "p")
                 if isinstance(error, ValueError):
                     print(f"[!]  Invalid Choice Entered! | ", str(ValueError()))
                     self.execute_option(Quit)
