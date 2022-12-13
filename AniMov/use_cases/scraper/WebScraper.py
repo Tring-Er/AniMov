@@ -1,5 +1,4 @@
 import json
-from sys import exit
 
 from AniMov.elements.HttpClient import HttpClient
 from AniMov.elements.HtmlParser import HtmlParser
