@@ -22,12 +22,10 @@ class ProvidersManager:
     def create_web_scraper(self, provider: Type[Provider]) -> WebScraper:
         return WebScraper(HttpClient(), provider())
 
-    def download_or_play_movie(self, show: Media, mode: str) -> None | Exception:
-        try:
-            self.web_scraper.download_or_play_movie(show, mode)
-        except Exception as error:
-            return error
+    def download_or_play_movie(self, show: Media, mode: str) -> str | Exception:
+        error_or_path_or_none = self.web_scraper.download_or_play_movie(show, mode)
+        return error_or_path_or_none
 
     def download_or_play_tv_show(self, show: Media, mode: str, selected_season: str, selected_episode: str) -> None | str | Exception:
-        error = self.web_scraper.download_or_play_tv_show(show, selected_season, selected_episode, mode)
-        return error
+        error_or_path_or_none = self.web_scraper.download_or_play_tv_show(show, selected_season, selected_episode, mode)
+        return error_or_path_or_none

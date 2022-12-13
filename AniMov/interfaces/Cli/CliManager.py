@@ -99,7 +99,10 @@ class CliManager:
                     print(f"[!]  Episode unavailable! | ", str(error))
                     self.execute_option(Quit)
                 if isinstance(error, ModuleNotFoundError):
-                    print(f"[!]Could not play show: MPV not found")
+                    print(f"[!]Could not play show: MPV not found | {error}")
+                    self.execute_option(Quit)
+                if isinstance(error, Exception):
+                    print(f"Unexpected error | {error}")
                     self.execute_option(Quit)
 
     def entry_point(self) -> None:

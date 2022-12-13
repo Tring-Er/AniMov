@@ -39,15 +39,15 @@ class WebScraper:
         cdn_url = self.http_client.get_request(f"https://theflix.to:5679/tv/videos/{episode_id}/request-access?contentUsageType=Viewing").json()["url"]
         return cdn_url
 
-    def download_or_play_movie(self, show: Media, state: str = "d" or "p") -> None:
-        show_title = show.title
-        show_id = show.show_id
-        show_url = self.provider.create_movie_url(show_title, show_id)
+    def download_or_play_movie(self, show: Media, state: str = "d" or "p") -> None | str | Exception:
+        show_url = self.provider.create_movie_url(show.title, show.show_id)
         cdn_url = self.get_show_cnd_url(show_url, self.cookies)
         if state == "d":
-            MediaDownloader.download_show(cdn_url, show_title)
+            download_path = MediaDownloader.download_show(cdn_url, show.title)
+            return download_path
         else:
-            MediaPlayer.play_show(cdn_url, show_title, self.provider.base_url)
+            error = MediaPlayer.play_show(cdn_url, show.title, self.provider.base_url)
+            return error
 
     def download_or_play_tv_show(self, show: Media, selected_season: str, selected_episode: str, state: str = "d" or "p") -> None | str | Exception:
         url = self.provider.get_tv_show_url(show.title, show.show_id, selected_season, selected_episode)
