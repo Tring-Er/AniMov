@@ -2,11 +2,11 @@ from abc import ABC, abstractmethod
 
 
 class Provider(ABC):
-
-    @property
-    @abstractmethod
-    def base_url(self) -> str:
-        """Base url of the provider"""
+    BASE_URL: str
+    COOKIES_URL: str
+    COOKIES_QUERY: dict
+    BASE_MOVIE_CDN_URL: str
+    BASE_TV_SHOW_EPISODE_CDN_URL: str
 
     @abstractmethod
     def get_tv_show_url(self, show_title: str, show_id: int, selected_season: str, selected_episode: str) -> str:

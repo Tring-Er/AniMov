@@ -13,50 +13,57 @@ class WebScraper:
     def __init__(self, http_client: HttpClient, provider: Provider) -> None:
         self.http_client = http_client
         self.provider = provider
-        self.cookies = self.create_cookies()
+        self.cookies = self.create_cookies(self.provider.COOKIES_URL, self.provider.COOKIES_QUERY)
 
-    def create_cookies(self) -> str:
-        url_query = {"affiliateCode": "", "pathname": "/"}
-        response = self.http_client.post_request("https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing", url_query)
+    def create_cookies(self, url: str, url_query: dict) -> str:
+        response = self.http_client.post_request(url, url_query)
         return response.headers["Set-Cookie"]
 
-    def get_show_cnd_url(self, show_url: str, cookies) -> str:
+    def get_movie_cdn_id(self, show_url: str, cookies: str) -> str:
         self.http_client.set_headers({"Cookie": cookies})
-        show_cdn_id = json.loads(HtmlParser(self.http_client.get_request(show_url).text, "lxml").get("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["movie"]["videos"][0]
+        show_cdn_id: str = json.loads(HtmlParser(self.http_client.get_request(show_url).text, "lxml").get("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["movie"]["videos"][0]
+        return show_cdn_id
+
+    def get_movie_cnd_url(self, base_cdn_url: str, show_cdn_id: str, cookies: str) -> str:
         self.http_client.set_headers({"Cookie": cookies})
-        show_cdn_url = self.http_client.get_request(f"https://theflix.to:5679/movies/videos/{show_cdn_id}/request-access?contentUsageType=Viewing").json()["url"]
+        show_cdn_url: str = self.http_client.get_request(base_cdn_url.format(show_cdn_id)).json()["url"]
         return show_cdn_url
 
-    def get_episode_cdn_url(self, url, selected_season, selected_episode, cookies) -> str | Exception:
+    def get_episode_cdn_id(self, url: str, selected_season: str, selected_episode: str, cookies: str) -> str | Exception:
         self.http_client.set_headers({"Cookie": cookies})
         show_data = json.loads(HtmlParser(self.http_client.get_request(url).text, "lxml").get("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["selectedTv"]["seasons"]
         try:
             episode_id = show_data[int(selected_season) - 1]["episodes"][int(selected_episode) - 1]["videos"][0]
         except Exception as error:
             return error
+        return episode_id
+
+    def get_episode_cdn_url(self, episode_base_cdn_url: str, episode_id: str, cookies: str) -> str:
         self.http_client.set_headers({"Cookie": cookies})
-        cdn_url = self.http_client.get_request(f"https://theflix.to:5679/tv/videos/{episode_id}/request-access?contentUsageType=Viewing").json()["url"]
+        cdn_url = self.http_client.get_request(episode_base_cdn_url.format(episode_id)).json()["url"]
         return cdn_url
 
-    def download_or_play_movie(self, show: Media, state: str = "d" or "p") -> None | str | Exception:
+    def download_or_play_movie(self, show: Media, mode: str) -> None | str | Exception:
         show_url = self.provider.create_movie_url(show.title, show.show_id)
-        cdn_url = self.get_show_cnd_url(show_url, self.cookies)
-        if state == "d":
+        show_cdn_id = self.get_movie_cdn_id(show_url, self.cookies)
+        cdn_url = self.get_movie_cnd_url(self.provider.BASE_MOVIE_CDN_URL, show_cdn_id, self.cookies)
+        if mode == "d":
             download_path = MediaDownloader.download_show(cdn_url, show.title)
             return download_path
         else:
-            error = MediaPlayer.play_show(cdn_url, show.title, self.provider.base_url)
+            error = MediaPlayer.play_show(cdn_url, show.title, self.provider.BASE_URL)
             return error
 
-    def download_or_play_tv_show(self, show: Media, selected_season: str, selected_episode: str, state: str = "d" or "p") -> None | str | Exception:
+    def download_or_play_tv_show(self, show: Media, selected_season: str, selected_episode: str, mode: str) -> None | str | Exception:
         url = self.provider.get_tv_show_url(show.title, show.show_id, selected_season, selected_episode)
-        cdn_url_or_exception = self.get_episode_cdn_url(url, selected_season, selected_episode, self.cookies)
-        if isinstance(cdn_url_or_exception, Exception):
-            return cdn_url_or_exception
-        if state == "d":
-            download_path = MediaDownloader.download_show(cdn_url_or_exception, show.title)
+        episode_cdn_id_or_exception = self.get_episode_cdn_id(url, selected_season, selected_episode, self.cookies)
+        if isinstance(episode_cdn_id_or_exception, Exception):
+            return episode_cdn_id_or_exception
+        cdn_url = self.get_episode_cdn_url(self.provider.BASE_TV_SHOW_EPISODE_CDN_URL, episode_cdn_id_or_exception, self.cookies)
+        if mode == "d":
+            download_path = MediaDownloader.download_show(cdn_url, show.title)
             return download_path
         else:
-            error = MediaPlayer.play_show(cdn_url_or_exception, show.title, self.provider.base_url)
+            error = MediaPlayer.play_show(cdn_url, show.title, self.provider.BASE_URL)
             if isinstance(error, Exception):
                 return error

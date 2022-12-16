@@ -1,19 +1,15 @@
 from AniMov.use_cases.streaming_providers.Provider import Provider
 
-BASE_URL = "https://theflix.to"
-
 
 class TheFlix(Provider):
-
-    def __init__(self):
-        self.__base_url = BASE_URL
-
-    @property
-    def base_url(self) -> str:
-        return self.__base_url
+    BASE_URL = "https://theflix.to"
+    COOKIES_URL = "https://theflix.to:5679/authorization/session/continue?contentUsageType=Viewing"
+    COOKIES_QUERY = {"affiliateCode": "", "pathname": "/"}
+    BASE_MOVIE_CDN_URL = "https://theflix.to:5679/movies/videos/{}/request-access?contentUsageType=Viewing"
+    BASE_TV_SHOW_EPISODE_CDN_URL = "https://theflix.to:5679/tv/videos/{}/request-access?contentUsageType=Viewing"
 
     def get_tv_show_url(self, show_title: str, show_id: int, selected_season: str, selected_episode: str) -> str:
-        return f"{self.base_url}/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-{selected_episode}"
+        return f"{self.BASE_URL}/tv-show/{show_id}-{show_title}/season-{selected_season}/episode-{selected_episode}"
 
     def create_movie_url(self, show_title: str, show_id: int) -> str:
-        return f"{self.base_url}/movie/{show_id}-{show_title}"
+        return f"{self.BASE_URL}/movie/{show_id}-{show_title}"
