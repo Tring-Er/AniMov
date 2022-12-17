@@ -12,7 +12,7 @@ class HttpClient:
     """An interface for httpx library"""
 
     def __init__(self):
-        self.session = Client(timeout=10.0, headers=DEFAULT_HEADERS)
+        self.session = Client(timeout=30.0, headers=DEFAULT_HEADERS)
 
     def get_request(self, link: str) -> Response:
         response = self.session.get(link)
