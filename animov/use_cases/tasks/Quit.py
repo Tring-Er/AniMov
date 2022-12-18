@@ -1,6 +1,6 @@
 from sys import exit
 
-from AniMov.use_cases.tasks.Option import Option
+from animov.use_cases.tasks.Option import Option
 
 
 class Quit(Option):

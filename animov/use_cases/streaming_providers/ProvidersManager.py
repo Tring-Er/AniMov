@@ -1,8 +1,8 @@
-from AniMov.elements.Media import Media
-from AniMov.elements.HttpClient import HttpClient
-from AniMov.use_cases.streaming_providers import PROVIDERS
-from AniMov.use_cases.streaming_providers import Provider
-from AniMov.use_cases.scraper.WebScraper import WebScraper
+from animov.elements.Media import Media
+from animov.elements.HttpClient import HttpClient
+from animov.use_cases.streaming_providers import PROVIDERS
+from animov.use_cases.streaming_providers import Provider
+from animov.use_cases.scraper.WebScraper import WebScraper
 
 
 class ProvidersManager:

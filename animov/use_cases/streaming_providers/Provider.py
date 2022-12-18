@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from AniMov.elements.Media import Media
-from AniMov.use_cases.scraper.WebScraper import WebScraper
+from animov.elements.Media import Media
+from animov.use_cases.scraper.WebScraper import WebScraper
 
 
 class Provider(ABC):

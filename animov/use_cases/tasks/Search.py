@@ -1,9 +1,9 @@
 import json
 
-from AniMov.elements.Media import Media
-from AniMov.elements.HttpClient import HttpClient
-from AniMov.elements.HtmlParser import HtmlParser
-from AniMov.use_cases.tasks.Option import Option
+from animov.elements.Media import Media
+from animov.elements.HttpClient import HttpClient
+from animov.elements.HtmlParser import HtmlParser
+from animov.use_cases.tasks.Option import Option
 
 
 class Search(Option):

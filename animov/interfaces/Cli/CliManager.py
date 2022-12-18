@@ -1,10 +1,10 @@
 from typing import Type
 
-from AniMov.elements.HttpClient import HttpClient
-from AniMov.elements.Media import Media
-from AniMov.use_cases.streaming_providers.ProvidersManager import ProvidersManager
-from AniMov.use_cases.tasks import Search, TrendingTvShows, TrendingMovies, Quit, Option
-from AniMov.interfaces.Cli.CliMessages import CliMessages
+from animov.elements.HttpClient import HttpClient
+from animov.elements.Media import Media
+from animov.use_cases.streaming_providers.ProvidersManager import ProvidersManager
+from animov.use_cases.tasks import Search, TrendingTvShows, TrendingMovies, Quit, Option
+from animov.interfaces.Cli.CliMessages import CliMessages
 
 
 class CliManager:
