@@ -2,7 +2,6 @@ from animov.elements.Media import Media
 from animov.elements.HttpClient import HttpClient
 from animov.use_cases.streaming_providers import PROVIDERS
 from animov.use_cases.streaming_providers import Provider
-from animov.use_cases.scraper.WebScraper import WebScraper
 
 
 class ProvidersManager:
@@ -14,11 +13,10 @@ class ProvidersManager:
     def get_provider(self) -> Provider:
         current_provider = self.providers[0]
         self.providers.remove(current_provider)
-        web_scraper = WebScraper(HttpClient(), current_provider.COOKIES_URL, current_provider.COOKIES_QUERY)
-        current_provider_instance = current_provider(web_scraper)
+        current_provider_instance = current_provider(HttpClient())
         return current_provider_instance
 
-    def download_or_play_movie(self, show: Media, mode: str) -> str | Exception:
+    def download_or_play_movie(self, show: Media, mode: str) -> None | str | Exception:
         error_or_path_or_none = self.current_provider.download_or_play_movie(show, mode)
         return error_or_path_or_none
 

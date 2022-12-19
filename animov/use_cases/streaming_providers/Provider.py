@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from animov.elements.Media import Media
-from animov.use_cases.scraper.WebScraper import WebScraper
+from animov.elements.HttpClient import HttpClient
 
 
 class Provider(ABC):
@@ -12,7 +12,7 @@ class Provider(ABC):
     BASE_TV_SHOW_EPISODE_CDN_URL: str
 
     @abstractmethod
-    def __init__(self, web_scraper: WebScraper) -> None:
+    def __init__(self, html_client: HttpClient) -> None:
         ...
 
     @abstractmethod
