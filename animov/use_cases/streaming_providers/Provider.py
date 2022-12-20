@@ -24,9 +24,17 @@ class Provider(ABC):
         """Get the movie url"""
 
     @abstractmethod
-    def download_or_play_tv_show(self, show: Media, selected_season: str, selected_episode: str, mode: str) -> None | str | Exception:
-        """Download or play the selected tv show"""
+    def play_tv_show(self, show: Media, selected_season: str, selected_episode: str) -> None:
+        """Play the selected tv show"""
 
     @abstractmethod
-    def download_or_play_movie(self, show: Media, mode: str) -> None | str | Exception:
-        """Download or play the selected movie"""
+    def download_tv_show(self, show: Media, selected_season: str, selected_episode: str) -> str:
+        """Download the selected tv show"""
+
+    @abstractmethod
+    def play_movie(self, show: Media) -> None:
+        """Play the selected movie"""
+
+    @abstractmethod
+    def download_movie(self, show: Media) -> str:
+        """Download the selected movie"""
