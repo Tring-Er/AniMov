@@ -24,17 +24,9 @@ class Provider(ABC):
         """Get the movie url"""
 
     @abstractmethod
-    def play_tv_show(self, show: Media, selected_season: str, selected_episode: str) -> None:
-        """Play the selected tv show"""
+    def play_media(self, media: Media, **kwargs) -> None:
+        """Play the selected Media"""
 
     @abstractmethod
-    def download_tv_show(self, show: Media, selected_season: str, selected_episode: str) -> str:
-        """Download the selected tv show"""
-
-    @abstractmethod
-    def play_movie(self, show: Media) -> None:
-        """Play the selected movie"""
-
-    @abstractmethod
-    def download_movie(self, show: Media) -> str:
-        """Download the selected movie"""
+    def download_media(self, media: Media, **kwargs) -> str:
+        """Download the selected Media"""

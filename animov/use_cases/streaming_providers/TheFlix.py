@@ -50,15 +50,6 @@ class TheFlix(Provider):
         episode_cdn_url = self.filter_episode_cdn_url_response(episode_cdn_url_data)
         return episode_cdn_url
 
-    def play_tv_show(self, show: Media, selected_season: str, selected_episode: str) -> None:
-        episode_cdn_url = self.get_episode_cdn_url(show, selected_season, selected_episode)
-        MediaPlayer.play_show(episode_cdn_url, show.title, self.BASE_URL)
-
-    def download_tv_show(self, show: Media, selected_season: str, selected_episode: str) -> str:
-        episode_cdn_url = self.get_episode_cdn_url(show, selected_season, selected_episode)
-        download_path = MediaDownloader.download_show(episode_cdn_url, show.title)
-        return download_path
-
     def filter_show_cdn_id(self, response_data: str) -> str:
         show_cdn_id: str = json.loads(HtmlParser(response_data, "lxml").get("#__NEXT_DATA__")[0].text)["props"]["pageProps"]["movie"]["videos"][0]
         return show_cdn_id
@@ -74,11 +65,20 @@ class TheFlix(Provider):
         cdn_url = self.filter_cdn_data(cdn_data)
         return cdn_url
 
-    def play_movie(self, show: Media) -> None:
-        cdn_url = self.get_movie_cdn_url(show)
-        MediaPlayer.play_show(cdn_url, show.title, self.BASE_URL)
+    def get_cdn_url(self, media: Media, **kwargs) -> str:
+        selected_season = kwargs.get("selected_season", None)
+        selected_episode = kwargs.get("selected_episode", None)
+        if media.show_type == "MOVIE":
+            cdn_url = self.get_movie_cdn_url(media)
+        else:
+            cdn_url = self.get_episode_cdn_url(media, selected_season, selected_episode)
+        return cdn_url
 
-    def download_movie(self, show: Media) -> str | Exception:
-        cdn_url = self.get_movie_cdn_url(show)
-        download_path = MediaDownloader.download_show(cdn_url, show.title)
+    def play_media(self, media: Media, **kwargs) -> None:
+        cdn_url = self.get_cdn_url(media, **kwargs)
+        MediaPlayer.play_show(cdn_url, media.title, self.BASE_URL)
+
+    def download_media(self, media: Media, **kwargs) -> str:
+        cdn_url = self.get_cdn_url(media, **kwargs)
+        download_path = MediaDownloader.download_show(cdn_url, media.title)
         return download_path

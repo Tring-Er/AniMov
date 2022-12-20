@@ -66,9 +66,9 @@ class CliManager:
                 if show_to_download.show_type == "TV":
                     selected_season = input(f"Please input the season number(total seasons:{show_to_download.number_of_seasons}): ")
                     selected_episode = input(f"Please input the episode number: ")
-                    download_path = self.provider_manager.download_or_play_tv_show(show_to_download, "d", selected_season, selected_episode)
+                    download_path = self.provider_manager.download_or_play_media(show_to_download, "d", selected_season=selected_season, selected_episode=selected_episode)
                 else:
-                    download_path = self.provider_manager.download_or_play_movie(show_to_download, "d")
+                    download_path = self.provider_manager.download_or_play_media(show_to_download, "d")
                 if isinstance(download_path, ValueError):
                     print(f"[!]  Invalid Choice Entered! | ", str(ValueError()))
                     self.execute_option(Quit)
@@ -76,6 +76,7 @@ class CliManager:
                     print(f"[!]  This Episode is coming soon! | ", str(IndexError()))
                     self.execute_option(Quit)
                 print(f"Downloaded at {download_path}")
+                self.execute_option(Quit)
             else:
                 try:
                     choice = int(choice)
@@ -89,9 +90,9 @@ class CliManager:
                 if selected_show.show_type == "TV":
                     selected_season = input(f"Please input the season number(total seasons:{selected_show.number_of_seasons}): ")
                     selected_episode = input(f"Please input the episode number: ")
-                    self.provider_manager.download_or_play_tv_show(selected_show, "p", selected_season, selected_episode)
+                    self.provider_manager.download_or_play_media(selected_show, "p", selected_season=selected_season, selected_episode=selected_episode)
                 else:
-                    self.provider_manager.download_or_play_movie(selected_show, "p")
+                    self.provider_manager.download_or_play_media(selected_show, "p")
                 self.execute_option(Quit)
 
     def entry_point(self) -> None:
