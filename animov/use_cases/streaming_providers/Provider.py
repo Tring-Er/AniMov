@@ -8,20 +8,20 @@ class Provider(ABC):
     BASE_URL: str
     COOKIES_URL: str
     COOKIES_QUERY: dict
-    BASE_MOVIE_CDN_URL: str
-    BASE_TV_SHOW_EPISODE_CDN_URL: str
+    BASE_MEDIA_URL: str
+    BASE_MEDIA_CDN_URL: str
 
     @abstractmethod
     def __init__(self, html_client: HttpClient) -> None:
         ...
 
     @abstractmethod
-    def get_tv_show_url(self, show_title: str, show_id: int, selected_season: str, selected_episode: str) -> str:
-        """Get the tv show url"""
+    def create_media_url(self, media: Media, **kwargs) -> str:
+        """Create the media url"""
 
     @abstractmethod
-    def create_movie_url(self, show_title: str, show_id: int) -> str:
-        """Get the movie url"""
+    def create_media_cdn_url(self, media: Media, media_cdn_id: str) -> str:
+        """Create the media cdn url"""
 
     @abstractmethod
     def play_media(self, media: Media, **kwargs) -> None:

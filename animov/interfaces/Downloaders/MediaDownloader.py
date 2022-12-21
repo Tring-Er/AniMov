@@ -5,7 +5,7 @@ from subprocess import Popen
 class MediaDownloader:
 
     @staticmethod
-    def download_show(cnd_url: str, file_name: str) -> str:
+    def download_media(cnd_url: str, file_name: str) -> str:
         ffmpeg_args = ['ffmpeg',
                        '-n',
                        '-thread_queue_size',

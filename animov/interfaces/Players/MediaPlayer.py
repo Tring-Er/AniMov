@@ -4,7 +4,7 @@ from subprocess import Popen
 class MediaPlayer:
 
     @staticmethod
-    def play_show(url: str, show_title: str, base_url: str) -> None:
+    def play_media(url: str, show_title: str, base_url: str) -> None:
         try:
             args = ["mpv",
                     f"--referrer={base_url}",
